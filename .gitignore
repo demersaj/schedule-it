@@ -2,7 +2,6 @@
 .idea/
 
 # ignore dependencies
-Pipfile
 packages/node_modules/
 frontend/.pnp
 frontend/.pnp.js
