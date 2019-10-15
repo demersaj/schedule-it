@@ -70,7 +70,7 @@ class File(models.Model):
 		 null=False
 	)
 	class Meta:
-		unique_together = ('file_type','location')
+		unique_together = ('file_name','location')
 
 class Slot(models.Model):
     date = models.DateField(
