@@ -33,6 +33,18 @@ class Migration(migrations.Migration):
                 ('phone_num', models.CharField(max_length=25, verbose_name='Phone number')),
             ],
         ),
+        
+        migrations.CreateModel(
+            name='Professor',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('onid', models.CharField(max_length=25, verbose_name='ONID')),
+                ('first_name', models.CharField(max_length=50, verbose_name='First name')),
+                ('last_name', models.CharField(max_length=50, verbose_name='Last name')),
+                ('phone_num', models.CharField(max_length=25, verbose_name='Phone number')),
+            ],
+        ),
+        
         migrations.CreateModel(
             name='Reservation',
             fields=[
