@@ -18,6 +18,24 @@ class Student(models.Model):
         max_length=25
 	)
 
+class Professor(models.Model):
+	onid = models.CharField(
+	    'ONID',
+	    max_length=25
+	)
+	first_name = models.CharField(
+	    'First name',
+	    max_length=50
+	)
+	last_name = models.CharField(
+        'Last name',
+        max_length=50
+	)
+	phone_num = models.CharField(
+        'Phone number',
+        max_length=25
+	)
+	
 class Reservation(models.Model):
 	student = models.ForeignKey(
 	    'Student',
