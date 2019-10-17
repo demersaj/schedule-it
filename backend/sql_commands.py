@@ -10,6 +10,21 @@ createStudentTable = "CREATE TABLE IF NOT EXISTS Student(
     Phone     TEXT        NOT NULL
 );"
 
+#Delete the student table.
+deleteStudentTable = "DELETE FROM TABLE WHERE id = ?;"
+
+#Create the professor table. 
+createProfessorTable = "CREATE TABLE IF NOT EXISTS Professor(
+    id        INTEGER PRIMARY KEY AUTOINCREMENT,
+    ONID      TEXT UNIQUE NOT NULL,
+    FName     TEXT        NOT NULL,
+    LName     TEXT        NOT NULL,
+    Phone     TEXT        NOT NULL
+);"
+
+#Delete the professor table.
+deleteProfessorTable = "DELETE FROM TABLE WHERE id = ?;"
+
 #Create the slot table.
 createSlotTable = "CREATE TABLE IF NOT EXISTS Slot(
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -19,6 +34,9 @@ createSlotTable = "CREATE TABLE IF NOT EXISTS Slot(
     numPeople   INTEGER NOT NULL,
     limitPeople INTEGER NOT NULL
 );"
+
+#Delete the slot table. 
+deleteSlotTable = "DELETE FROM TABLE WHERE id = ?;"
 
 #Create the file table.
 createFileTable = "CREATE TABLE IF NOT EXISTS File(
@@ -32,18 +50,28 @@ createFileTable = "CREATE TABLE IF NOT EXISTS File(
     FOREIGN KEY(reservationID) REFERENCES Reservation(id) ON DELETE CASCADE
 );"
 
+#Delete the file table. 
+deleteFileTable = "DELETE FROM TABLE WHERE id = ?;"
+
 #Create the reservation table.
 createReservationTable = "CREATE TABLE IF NOT EXISTS Reservation(
     id            INTEGER PRIMARY KEY AUTOINCREMENT,
     studentID     INTEGER,
     slotID        INTEGER,
-    UNIQUE(studentID,slotID),
+    UNIQUE(studentID,professorID,slotID),
     FOREIGN KEY(studentID) REFERENCES Student(id) ON DELETE CASCADE,
+    FOREIGN KEY(studentID) REFERENCES Professor(id) ON DELETE CASCADE,
     FOREIGN KEY(slotID)    REFERENCES Slot(id)    ON DELETE CASCADE
 );"
 
+#Delete the reservation table 
+deleteReservationTable = "DELETE FROM TABLE WHERE id = ?;"
+
 #Insert a row in the student table.
 insertStudent = "INSERT INTO Student(ONID,FName,LName,Phone) Values(?,?,?);"
+
+#Insert a row in the professor table. 
+insertProfessor = "INSERT INTO Professor(ONID,FName,LName,Phone) Values(?,?,?);"
 
 #Insert a row in the slot table.
 insertSlot    = "INSERT INTO Slot(start_time, end_time, location, numPeople, limitPeople) Values(?,?,?,?,?);"
@@ -59,6 +87,12 @@ deleteStudent = "DELETE FROM Student WHERE id = ?;"
 
 #Delete a row in the student table by ONID.
 deleteStudent = "DELETE FROM Student WHERE ONID = ?;"
+
+#Delete a row in the professor table by id. 
+deleteProfessor = "DELETE FROM Professor WHERE id = ?;"
+
+#Delete a row in the professor table by id. 
+deleteProfessor = "DELETE FROM Professor WHERE id = ?;"
 
 #Delete a row in the slot table.
 deleteSlot    = "DELETE FROM Slot WHERE id = ?;"
