@@ -1,24 +1,24 @@
 from rest_framework import serializers
-from .models import Student, Reservation, File, Slot
+from schedule.models import Student, Reservation, File, Slot
 
 # convert model instances to JSON so the frontend can work with data
 
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
-        fields = ('onid', 'first_name', 'last_name', 'phone_num')
+        fields = '__all__'
 
 class ReservationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reservation
-        fields = ('student', 'slot')
+        fields = '__all__'
 
 class FileSerializer(serializers.ModelSerializer):
     class Meta:
         model = File
-        fields = ('reservation', 'file_name', 'file_type', 'location')
+        fields = '__all__'
 
 class SlotSerializer(serializers.ModelSerializer):
     class Meta:
         model = Slot
-        fields = ('date', 'start_time', 'end_time', 'location', 'num_people')
+        fields = '__all__'

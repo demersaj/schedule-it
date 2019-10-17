@@ -64,3 +64,4 @@ class Slot(models.Model):
         max_length=100
     )
     num_people = models.IntegerField('max number of people')
+    created_at = models.DateTimeField(auto_now_add=True)

@@ -2,14 +2,16 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "proxies": "http://localhost:8000",
   "dependencies": {
+    "@syncfusion/ej2-data": "latest",
     "@syncfusion/ej2-react-schedule": "^17.3.17",
+    "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-scripts": "3.2.0",
-    "reactstrap": "^8.0.1",
-	"@syncfusion/ej2-data": "latest"
+    "reactstrap": "^8.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -31,5 +33,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "webpack-cli": "^3.3.9"
   }
 }
