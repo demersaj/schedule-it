@@ -8,6 +8,11 @@ class StudentSerializer(serializers.ModelSerializer):
         model = Student
         fields = '__all__'
 
+class ProfessorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Professor
+        fields = '__all__'
+        
 class ReservationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reservation
