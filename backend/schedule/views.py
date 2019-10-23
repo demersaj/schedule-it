@@ -1,12 +1,12 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .serializers import StudentSerializer, ReservationSerializer, FileSerializer, SlotSerializer
-from .models import Student, Reservation, File, Slot
+from .serializers import UserSerializer, ReservationSerializer, FileSerializer, SlotSerializer
+from .models import User, Reservation, File, Slot
 
 
-class StudentView(viewsets.ModelViewSet):
-    serializer_class = StudentSerializer
-    queryset = Student.objects.all()
+class UserView(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
 
 class ReservationView(viewsets.ModelViewSet):
     serializer_class = ReservationSerializer

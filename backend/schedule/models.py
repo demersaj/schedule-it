@@ -16,8 +16,7 @@ def beforeCurrentTime(arg_date,arg_time):
 	else:
 		return 0
 
-
-class Student(models.Model):
+class User(models.Model):
         onid = models.CharField(
             'ONID',
             max_length=25,
@@ -25,57 +24,38 @@ class Student(models.Model):
                 null=False
         )
         first_name = models.CharField(
-            'First name',
-            max_length=50,
-                null=False
+        'first name',
+         max_length=50,
+         null=False
         )
         last_name = models.CharField(
-        'Last name',
+        'last name',
         max_length=50,
-                null=False
+        null=False
         )
-        phone_num = models.CharField(
-        'Phone number',
+        phone_number = models.CharField(
+        'phone number',
         max_length=25,
-                null=False
+        null=False
         )
-
-class Professor(models.Model):
-        onid = models.CharField(
-            'ONID',
-            max_length=25,
-                unique=True,
-                null=False
-        )
-        first_name = models.CharField(
-            'First name',
-            max_length=50,
-                null=False
-        )
-        last_name = models.CharField(
-        'Last name',
-        max_length=50,
-                null=False
-        )
-        phone_num = models.CharField(
-        'Phone number',
-        max_length=25,
-                null=False
+        creator_privelege = models.BooleanField(
+        'creator',
+        null=False
         )
 
 class Reservation(models.Model):
-        student = models.ForeignKey(
-            'Student',
+        user = models.ForeignKey(
+            'user',
             on_delete=models.CASCADE,
                 null=False
         )
         slot = models.ForeignKey(
-            'Slot',
+            'slot',
             on_delete=models.CASCADE,
                 null=False
         )
         class Meta:
-                unique_together = ('student','slot')
+                unique_together = ('user','slot')
 
         def clean(self):
             if self.slot.num_people <= len(Reservation.objects.filter(slot_id = self.slot_id)):
@@ -91,37 +71,37 @@ class Reservation(models.Model):
 
 class File(models.Model):
         reservation = models.ForeignKey(
-            'Reservation',
+            'reservation',
             on_delete=models.CASCADE,
                 null=False
         )
-        file_name = models.CharField(
-            'File name',
+        name = models.CharField(
+            'name',
             max_length=100,
                 null=False
     )
-        file_type = models.CharField(
-            'File type',
+        type = models.CharField(
+            'type',
              max_length=50,
                  null=False
         )
-        location = models.CharField(
-        'File location',
+        path = models.CharField(
+        'path',
                  max_length=500,
                  null=False
         )
         class Meta:
-                unique_together = ('file_type','location')
+                unique_together = ('name','path')
 
 class Slot(models.Model):
     date = models.DateField(
-        'Date reserved',
+        'date reserved',
         max_length=25,
 		null=False
     )
 
     start_time = models.TimeField(
-        'Start time',
+        'start time',
         max_length=25,
 		null=False
     )
@@ -138,15 +118,22 @@ class Slot(models.Model):
 		null=False
 	)
 
+    creator = models.ForeignKey(
+		'user',
+		on_delete=models.CASCADE,
+			null=False
+	)
+
     num_people = models.IntegerField('max number of people')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def clean(self):
         if self.start_time > self.end_time:
              raise APIException(detail='Start time must be before end time.',code='400')
-
         if(beforeCurrentTime(self.date,self.start_time)):
-            raise APIException(detail='Time slots can\'t be created in the the past.',code='400')
+            raise APIException(detail='Time Slots can\'t be created in the the past.',code='400')
+        if(self.creator.creator_privelege == False):
+            raise APIException(detail='Time Slots can\'t be created by this user.',code='400')
 
 
     def save(self, *args, **kwargs):
