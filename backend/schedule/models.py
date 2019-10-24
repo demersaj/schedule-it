@@ -11,10 +11,7 @@ def beforeCurrentTime(arg_date,arg_time):
 	scheduled_datetime = datetime.datetime.combine(arg_date,arg_time)
 	scheduled_datetime = settings_tz.localize(scheduled_datetime)
 
-	if(current_datetime > scheduled_datetime):
-		return 1
-	else:
-		return 0
+	return 1 if (current_datetime > scheduled_datetime) else 0
 
 class User(models.Model):
         onid = models.CharField(

@@ -5,10 +5,10 @@ from schedule import views
 
 
 router = routers.DefaultRouter()
-router.register(r'Users', views.UserView, 'User')
-router.register(r'Reservations', views.ReservationView, 'Reservation')
-router.register(r'Files', views.FileView, 'File')
-router.register(r'Slots', views.SlotView, 'Slot')
+router.register(r'users', views.UserView, 'User')
+router.register(r'reservations', views.ReservationView, 'Reservation')
+router.register(r'files', views.FileView, 'File')
+router.register(r'slots', views.SlotView, 'Slot')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
