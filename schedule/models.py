@@ -35,7 +35,7 @@ class User(models.Model):
         max_length=25,
         null=False
         )
-        creator_privelege = models.BooleanField(
+        creator_privilege = models.BooleanField(
         'creator',
         null=False
         )

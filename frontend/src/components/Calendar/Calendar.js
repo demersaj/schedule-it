@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { Component } from 'react';
 import './Calendar.css';
 import { Inject, ScheduleComponent, Day, Week, WorkWeek, Month, Agenda,
 	EventSettingsModel } from '@syncfusion/ej2-react-schedule';
 import { DataManager, WebApiAdaptor } from '@syncfusion/ej2-data';
 
-class Calendar extends React.Component {
+class Calendar extends Component {
 	 localData: EventSettingsModel = {
 		dataSource: [{
 			StartTime: new Date(2019, 9, 17, 14, 30),
