@@ -1,6 +1,8 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import './App.css';
 import Calendar from './components/Calendar/Calendar';
+//import User from './components/User/User';
 
 function App() {
   return (

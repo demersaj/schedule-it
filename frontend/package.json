@@ -14,8 +14,9 @@
     "reactstrap": "^8.0.1"
   },
   "scripts": {
+	"dev": "webpack --mode develpoment ./src/index.js --output ./static/frontend/main.js",
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "webpack --mode production ./src/index.js --output ./static/frontend/main.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

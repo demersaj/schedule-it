@@ -11,6 +11,7 @@ router.register(r'files', views.FileView, 'File')
 router.register(r'slots', views.SlotView, 'Slot')
 
 urlpatterns = [
+    path('', include('frontend.urls')),
     path('admin/', admin.site.urls),
     path('api/', include(router.urls))
 ]
