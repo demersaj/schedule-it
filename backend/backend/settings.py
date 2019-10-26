@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'schedule',
-    'frontend',
     'webpack_loader'
 ]
 

@@ -1,19 +1,31 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import './App.css';
+import {
+	Route,
+	NavLink,
+	BrowserRouter
+} from 'react-router-dom';
+
 import Calendar from './components/Calendar/Calendar';
-//import User from './components/User/User';
+import User from './components/User/User';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-	      <h1>Schedule-It</h1>
-      </header>
-        <p>
-         <Calendar/>
-        </p>
-    </div>
+  	<BrowserRouter>
+	    <div>
+			<nav className='navbar navbar-expand-lg navbar-light bg-light'>
+				<ul className='navbar-nav mr-auto'>
+					<li><NavLink to='/' className='nav-link'>Home</NavLink></li>
+					<li><NavLink to='/users' className='nav-link'>Users</NavLink></li>
+					<li><NavLink to='/reservations' className='nav-link'>Reservations</NavLink></li>
+				</ul>
+			</nav>
+		    <div className='content'>
+			    <Route exact path='/users' component={User}/>
+			    <Route exact path='/reservations' component={Calendar}/>
+		    </div>
+	    </div>
+    </BrowserRouter>
   );
 }
 
