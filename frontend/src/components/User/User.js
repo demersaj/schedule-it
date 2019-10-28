@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './User.css';
 
-const instance = axios.create({ baseURL: 'http://localhost:8000' });
 const API = 'http://localhost:8000/api/users/';
 
 class User extends Component {
@@ -12,6 +11,7 @@ class User extends Component {
 		this.state = {
 			users: [],
 			user: {
+				id: '',
 				onid: '',
 				'First Name': '',
 				'Last Name': '',
@@ -28,7 +28,9 @@ class User extends Component {
 	}
 
 	getUsers = _ => {
-		axios.get(API)
+		const {user} = this.state;
+		const url = `${API}${user.id}`;
+		axios.get(url)
 			.then(res => this.setState({
 				users: res.data,
 				isLoading: false
@@ -40,7 +42,7 @@ class User extends Component {
 	};
 
 	renderTableHeader() {
-		let header = Object.keys(this.state.user).slice(0, 4);
+		let header = Object.keys(this.state.user).slice(1, 5);
 		return header.map(( key, index ) => {
 			return <th key={index}>{key}</th>
 		})
@@ -48,9 +50,9 @@ class User extends Component {
 
 	renderTableData() {
 		return this.state.users.map((user, index) => {
-			const { onid, first_name, last_name, phone_number } = user;	// destructure
+			const { id, onid, first_name, last_name, phone_number } = user;	// destructure
 			return (
-				<tr key={onid}>
+				<tr key={id}>
 					<td>{onid}</td>
 					<td>{first_name}</td>
 					<td>{last_name}</td>

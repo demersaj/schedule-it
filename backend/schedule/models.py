@@ -4,8 +4,9 @@ from rest_framework.exceptions import APIException
 import datetime
 import pytz
 from backend import settings
+from datetime import date
 
-def beforeCurrentTime(arg_date,arg_time):
+def beforeCurrentTime(arg_date, arg_time):
 	settings_tz = pytz.timezone(settings.TIME_ZONE)
 	current_datetime = datetime.datetime.now(settings_tz)
 	scheduled_datetime = datetime.datetime.combine(arg_date,arg_time)
@@ -58,7 +59,7 @@ class Reservation(models.Model):
             if self.slot.num_people <= len(Reservation.objects.filter(slot_id = self.slot_id)):
                 raise APIException(detail='The slot is filled.',code='400')
 
-            if(beforeCurrentTime(self.slot.date,self.slot.start_time)):
+            if(beforeCurrentTime(self.slot.date,self.slot.StartTime)):
 	            raise APIException(detail='Reservations can\'t be made for time slots in the the past.',code='400')
 
         def save(self, *args, **kwargs):
@@ -91,44 +92,42 @@ class File(models.Model):
                 unique_together = ('name','path')
 
 class Slot(models.Model):
-    date = models.DateField(
-        'date reserved',
-        max_length=25,
-		null=False
-    )
 
-    start_time = models.TimeField(
+    StartTime = models.DateTimeField(
         'start time',
-        max_length=25,
+        max_length=50,
 		null=False
     )
 
-    end_time = models.TimeField(
+    EndTime = models.DateTimeField(
         'end time',
-        max_length=25,
+        max_length=50,
 		null=False
     )
 
-    location = models.CharField(
+    Location = models.CharField(
 		'location',
 		max_length=100,
 		null=False
 	)
 
-    creator = models.ForeignKey(
+    Owner = models.ForeignKey(
 		'user',
 		on_delete=models.CASCADE,
 			null=False
 	)
 
-    num_people = models.IntegerField('max number of people')
-    created_at = models.DateTimeField(auto_now_add=True)
+    Subject = models.CharField(
+	    'subject',
+	    max_length=100
+	)
+
 
     def clean(self):
-        if self.start_time > self.end_time:
+        if self.StartTime > self.EndTime:
              raise APIException(detail='Start time must be before end time.',code='400')
-        if(beforeCurrentTime(self.date,self.start_time)):
-            raise APIException(detail='Time Slots can\'t be created in the the past.',code='400')
+#         if(beforeCurrentTime(date.today(), self.StartTime)):
+#             raise APIException(detail='Time Slots can\'t be created in the the past.',code='400')
         if(self.creator.creator_privelege == False):
             raise APIException(detail='Time Slots can\'t be created by this user.',code='400')
 
