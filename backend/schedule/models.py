@@ -36,7 +36,7 @@ class User(models.Model):
         max_length=25,
         null=False
         )
-        creator_privelege = models.BooleanField(
+        creator_privilege = models.BooleanField(
         'creator',
         null=False
         )
@@ -59,7 +59,7 @@ class Reservation(models.Model):
             if self.slot.num_people <= len(Reservation.objects.filter(slot_id = self.slot_id)):
                 raise APIException(detail='The slot is filled.',code='400')
 
-            if(beforeCurrentTime(self.slot.date,self.slot.StartTime)):
+            if(beforeCurrentTime(self.slot.date,self.slot.start_time)):
 	            raise APIException(detail='Reservations can\'t be made for time slots in the the past.',code='400')
 
         def save(self, *args, **kwargs):
@@ -126,10 +126,10 @@ class Slot(models.Model):
     def clean(self):
         if self.StartTime > self.EndTime:
              raise APIException(detail='Start time must be before end time.',code='400')
-#         if(beforeCurrentTime(date.today(), self.StartTime)):
+#         if(beforeCurrentTime(date.today(), self.start_time)):
 #             raise APIException(detail='Time Slots can\'t be created in the the past.',code='400')
-        if(self.creator.creator_privelege == False):
-            raise APIException(detail='Time Slots can\'t be created by this user.',code='400')
+#         if(self.creator.creator_privilege == False):
+#             raise APIException(detail='Time Slots can\'t be created by this user.',code='400')
 
 
     def save(self, *args, **kwargs):

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './Calendar.css';
-import { Inject, ScheduleComponent, Day, Week, WorkWeek, Month, Agenda,
-	EventSettingsModel } from '@syncfusion/ej2-react-schedule';
+import { Inject, ScheduleComponent, Day, Week, WorkWeek, Month } from '@syncfusion/ej2-react-schedule';
 import { DataManager, JsonAdaptor } from '@syncfusion/ej2-data';
 
 class Calendar extends Component {
@@ -17,7 +16,8 @@ class Calendar extends Component {
 				'End Time': '',
 				location: '',
 				'Max number of people': ''
-			}
+			},
+			isLoading: true
 		}
 	}
 
@@ -27,7 +27,6 @@ class Calendar extends Component {
 		url: 'http://localhost:8000/api/slots/',    // url of api
 		adaptor: new JsonAdaptor(),
 		crossDomain: true
-		// todo: map custom fields in database to expected field in json adaptor
 	});
 
 
