@@ -14,5 +14,4 @@ router.register(r'slots', views.SlotView, 'Slot')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('auth/', include('rest_framework_social_oauth2.urls')),
 ]
