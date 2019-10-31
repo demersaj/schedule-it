@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'schedule',
     'webpack_loader',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -64,7 +65,7 @@ TEMPLATES = [
 ]
 
 TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, 'templates'),
+    os.path.join(BASE_DIR, '/backend/backend/templates'),
 )
 
 WSGI_APPLICATION = 'backend.wsgi.application'
@@ -114,12 +115,6 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
-
-STATIC_URL = '/static/'
-
-
 # change before submitting production version
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -143,12 +138,15 @@ AUTHENTICATION_BACKENDS = (
 
 LOGIN_URL = '/auth/login/google-oauth2/'
 
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, '/backend/static'),
+)
 
-SOCIAL_AUTH_URL_NAMESPACE = 'social'
+GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = 'client_secrets.json'
 
-# todo: remove key and secret
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '97035292419-vtd1vjmj9rbg3s1qlprnjrquecmkn0m8.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'HnOLiB6SzsCysHROnPNoifSN'
-
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}

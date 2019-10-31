@@ -5,6 +5,21 @@ import datetime
 import pytz
 from backend import settings
 from datetime import date
+from django.contrib import admin
+from django.contrib.auth.models import User
+from django.db import models
+from oauth2client.contrib.django_util.models import CredentialsField
+
+
+class CredentialsModel(models.Model):
+    id = models.ForeignKey(User, primary_key = True, on_delete = models.CASCADE)
+    credential = CredentialsField()
+    task = models.CharField(max_length = 80, null = True)
+    updated_time = models.CharField(max_length = 80, null = True)
+
+
+class CredentialsAdmin(admin.ModelAdmin):
+    pass
 
 def beforeCurrentTime(arg_date, arg_time):
 	settings_tz = pytz.timezone(settings.TIME_ZONE)
@@ -13,6 +28,7 @@ def beforeCurrentTime(arg_date, arg_time):
 	scheduled_datetime = settings_tz.localize(scheduled_datetime)
 
 	return 1 if (current_datetime > scheduled_datetime) else 0
+
 
 class User(models.Model):
         onid = models.CharField(
