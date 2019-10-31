@@ -18,23 +18,20 @@ class Calendar extends Component {
 				'Max number of people': ''
 			},
 			isLoading: true
-		}
+		};
+		this.dataManager = new DataManager({
+			url: 'http://localhost:8000/api/slots/',    // url of api
+			adaptor: new JsonAdaptor(),
+			crossDomain: true
+		});
 	}
-
-
-	// allows you to load data from remote repository
-	remoteData = new DataManager({
-		url: 'http://localhost:8000/api/slots/',    // url of api
-		adaptor: new JsonAdaptor(),
-		crossDomain: true
-	});
 
 
 	render() {
 		return (
 			<ScheduleComponent
 				currentView={'Month'}
-				eventSettings={this.remoteData}
+				eventSettings={this.dataManager}
 				allowResizing={true}
 			>
 				<Inject services={ [Day, Week, WorkWeek, Month] } />

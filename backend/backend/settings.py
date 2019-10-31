@@ -29,6 +29,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'schedule',
     'webpack_loader',
+    'oauth2_provider',
+    'social_django',
+    'rest_framework_social_oauth2',
 ]
 
 MIDDLEWARE = [
@@ -132,23 +135,24 @@ CORS_ALLOW_HEADERS = [
 
 APPEND_SLASH = False
 
-# the following is used for authentication
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+    'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  # django-oauth-toolkit >= 1.0.0
+    'rest_framework_social_oauth2.authentication.SocialAuthentication',
+    ),
+}
+
 AUTHENTICATION_BACKENDS = (
-    'social.backends.github.GithubOAuth2',
-    'social.backends.twitter.TwitterOAuth',
-    'social.backends.facebook.FacebookOAuth2',
-    'social.backends.google.GoogleOAuth2',
-    'django.contrib.auth.backends.ModelBackend',
+   'rest_framework_social_oauth2.backends.DjangoOAuth2',
+   'django.contrib.auth.backends.ModelBackend',
 )
-
-LOGIN_URL = '/auth/login/google-oauth2/'
-
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
-
-SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
 # todo: remove key and secret
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '97035292419-vtd1vjmj9rbg3s1qlprnjrquecmkn0m8.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'HnOLiB6SzsCysHROnPNoifSN'
 
+# Define SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE to get extra permissions from Google.
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+]
