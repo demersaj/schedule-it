@@ -8,6 +8,7 @@ import {
 
 import Calendar from './components/Calendar/Calendar';
 import User from './components/User/User';
+import Home from './components/Home/Home';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
 				</ul>
 			</nav>
 		    <div className='content'>
+			    <Route exact path='/' component={Home}/>
 			    <Route exact path='/users' component={User}/>
 			    <Route exact path='/reservations' component={Calendar}/>
 		    </div>
