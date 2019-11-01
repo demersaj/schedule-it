@@ -1,0 +1,32 @@
+import unittest
+
+class MyTestCase(unittest.TestCase)
+
+#runs if the calendar has not been made
+@unittest.skip("students cannot schedule classes for the calendar right now.")
+    def test_nothing(self):
+        self.fail("Try again next time")
+
+#determines if number of students signing up for slots has almost reached maximum capacity
+assertAlmostEqual(a, b)
+
+#determines if maximum number of students for a time slot has been reached
+assertEqual(a, b)
+
+#determines if a particular student is in a time slot
+assertIs(a, b)
+
+#determines if a particular student is not in a particular time slot
+assertisNot(a, b) 
+
+#determines if a student was properly deleted from a time slot 
+assertNotIn(a, b)
+
+#determine if the proper professor is in the class calendar
+assertTrue(x) 
+
+#runs if the number of students has reached a maximum and another student is trying to be added
+class ExpectedFailureTestCase(unittest.TestCase):
+    @unittest.expectedFailure
+    def test_fail(self):
+        self.assertEqual(1, 0, "No more students can be added to a time slot.")
