@@ -109,32 +109,32 @@ class File(models.Model):
 
 class Slot(models.Model):
 
-    StartTime = models.DateTimeField(
+    start = models.DateTimeField(
         'start time',
         max_length=50,
 		null=False
     )
 
-    EndTime = models.DateTimeField(
+    end = models.DateTimeField(
         'end time',
         max_length=50,
 		null=False
     )
 
-    Location = models.CharField(
+    location = models.CharField(
 		'location',
 		max_length=100,
 		null=False
 	)
 
-    Owner = models.ForeignKey(
+    owner = models.ForeignKey(
 		'user',
 		on_delete=models.CASCADE,
 			null=False
 	)
 
-    Subject = models.CharField(
-	    'subject',
+    title = models.CharField(
+	    'title',
 	    max_length=100
 	)
 
