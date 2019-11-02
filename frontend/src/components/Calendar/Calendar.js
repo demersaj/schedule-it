@@ -1,46 +1,55 @@
-import React, { Component } from 'react';
-import './Calendar.css';
-import { Inject, ScheduleComponent, Day, Week, WorkWeek, Month } from '@syncfusion/ej2-react-schedule';
-import { DataManager, JsonAdaptor } from '@syncfusion/ej2-data';
+import React, { Component } from "react";
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import Views from 'react-big-calendar';
+import moment from "moment";
 
-class Calendar extends Component {
-	constructor(props) {
-		super(...arguments);
+import "react-big-calendar/lib/css/react-big-calendar.css";
 
-		this.state = {
-			events: [],
-			event: {
-				subject: '',
-				date: '',
-				'Start Time': '',
-				'End Time': '',
-				location: '',
-				'Max number of people': ''
-			},
-			isLoading: true
-		}
+const localizer = momentLocalizer(moment);
+const propTypes = {};
+
+class Scheduler extends Component {
+	state = {
+		events: [
+			{
+				start: new Date(),
+				end: new Date(moment().add(1, "days")),
+				title: "Some title"
+			}
+		]
+	};
+
+	handleSelect = ({ start, end }) => {
+		const title = window.prompt('New Event name')
+		if (title)
+			this.setState({
+				events: [
+					...this.state.events,
+					{
+						start,
+						end,
+						title,
+					},
+				],
+			})
 	}
-
-
-	// allows you to load data from remote repository
-	remoteData = new DataManager({
-		url: 'http://localhost:8000/api/slots/',    // url of api
-		adaptor: new JsonAdaptor(),
-		crossDomain: true
-	});
-
 
 	render() {
 		return (
-			<ScheduleComponent
-				currentView={'Month'}
-				eventSettings={this.remoteData}
-				allowResizing={true}
-			>
-				<Inject services={ [Day, Week, WorkWeek, Month] } />
-			</ScheduleComponent>
-		)
+			<div className="App">
+				<Calendar
+					selectable
+					localizer={localizer}
+					defaultDate={new Date()}
+					defaultView="month"
+					events={this.state.events}
+					style={{ height: "100vh" }}
+					onSelectEvent={event => alert(event.title)}
+					onSelectSlot={this.handleSelect}
+				/>
+			</div>
+		);
 	}
 }
 
-export default Calendar;
+export default Scheduler;
