@@ -28,21 +28,20 @@ class Scheduler extends Component {
 	handleSelect = async ({ start, end }) => {
 		let title, location, num_people;
 		title = window.prompt('New Event name');
-		if (title) location = window.prompt('New Event location') ;
+		if (title) location = window.prompt('New Event location');
 		if (location) num_people = window.prompt('Number of people meeting.');
 		let postPromise;
-		if(num_people)
-		{
-			try{
+		if (num_people) {
+			try {
 				postPromise = await axios.post('http://localhost:8000/slots/',
-				{
-					title : title,
-					start : start,
-					end : end,
-					location : location,
-					owner : "1",
-					num_people : num_people
-				}).catch(console.log("caught"));
+					{
+						title: title,
+						start: start,
+						end: end,
+						location: location,
+						owner: "1",
+						num_people: num_people
+					}).catch(console.log("caught"));
 
 				this.setState({
 					events: [
@@ -54,17 +53,17 @@ class Scheduler extends Component {
 						},
 					],
 				})
-			}
-			catch(err)
-			{
-				console.log(start)
-				console.log(end)
+			} catch (err) {
+				console.log(start);
+				console.log(end);
 				console.log("Error Caught");
-				console.log(err.response.data)
+				console.log(err.response.data);
 				alert("Event could not be created\nSee log for details.")
 			}
+		}
+	}
 
-<<<<<<< HEAD
+
 	eventDisplay = ({ event	}) => {
 		return (
 			<span>
@@ -74,11 +73,6 @@ class Scheduler extends Component {
 		)
 	}
 
-=======
-
-	}
-	}
->>>>>>> 308ec43b5538f50d7017628b9e368ecfd201698d
 	componentDidMount() {
 		axios.get('http://localhost:8000/slots/')
 			.then(res => {
