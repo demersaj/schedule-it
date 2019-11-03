@@ -14,6 +14,14 @@ class Scheduler extends Component {
 
 		this.state = {
 			events: [],
+			event: {
+				id: null,
+				start: '',
+				end: '',
+				title: '',
+				location: '',
+				num_people: 0
+			}
 		}
 	}
 
@@ -56,9 +64,21 @@ class Scheduler extends Component {
 				alert("Event could not be created\nSee log for details.")
 			}
 
+<<<<<<< HEAD
+	eventDisplay = ({ event	}) => {
+		return (
+			<span>
+				{event.title}
+				<p>Location: {event.location}</p>
+			</span>
+		)
+	}
+
+=======
 
 	}
 	}
+>>>>>>> 308ec43b5538f50d7017628b9e368ecfd201698d
 	componentDidMount() {
 		axios.get('http://localhost:8000/slots/')
 			.then(res => {
@@ -90,6 +110,9 @@ class Scheduler extends Component {
 					style={{ height: "100vh" }}
 					onSelectEvent={event => alert(event.title)}
 					onSelectSlot={this.handleSelect}
+					components= {{
+						event: this.eventDisplay
+					}}
 				/>
 			</div>
 		);
