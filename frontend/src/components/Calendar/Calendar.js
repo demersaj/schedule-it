@@ -1,46 +1,99 @@
-import React, { Component } from 'react';
-import './Calendar.css';
-import { Inject, ScheduleComponent, Day, Week, WorkWeek, Month } from '@syncfusion/ej2-react-schedule';
-import { DataManager, JsonAdaptor } from '@syncfusion/ej2-data';
+import React, { Component } from "react";
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from "moment";
+import axios from 'axios';
 
-class Calendar extends Component {
+import "react-big-calendar/lib/css/react-big-calendar.css";
+
+const localizer = momentLocalizer(moment);
+const propTypes = {};
+
+class Scheduler extends Component {
 	constructor(props) {
-		super(...arguments);
+		super(props);
 
 		this.state = {
 			events: [],
-			event: {
-				subject: '',
-				date: '',
-				'Start Time': '',
-				'End Time': '',
-				location: '',
-				'Max number of people': ''
-			},
-			isLoading: true
 		}
 	}
 
+	handleSelect = async ({ start, end }) => {
+		let title, location, num_people;
+		title = window.prompt('New Event name');
+		if (title) location = window.prompt('New Event location') ;
+		if (location) num_people = window.prompt('Number of people meeting.');
+		let postPromise;
+		if(num_people)
+		{
+			try{
+				postPromise = await axios.post('http://localhost:8000/slots/',
+				{
+					title : title,
+					start : start,
+					end : end,
+					location : location,
+					owner : "1",
+					num_people : num_people
+				}).catch(console.log("caught"));
 
-	// allows you to load data from remote repository
-	remoteData = new DataManager({
-		url: 'http://localhost:8000/api/slots/',    // url of api
-		adaptor: new JsonAdaptor(),
-		crossDomain: true
-	});
+				this.setState({
+					events: [
+						...this.state.events,
+						{
+							start,
+							end,
+							title,
+						},
+					],
+				})
+			}
+			catch(err)
+			{
+				console.log(start)
+				console.log(end)
+				console.log("Error Caught");
+				console.log(err.response.data)
+				alert("Event could not be created\nSee log for details.")
+			}
 
+
+	}
+	}
+	componentDidMount() {
+		axios.get('http://localhost:8000/slots/')
+			.then(res => {
+				console.log(res.data);
+				let appointments = res.data;
+
+				for (let i = 0; i < appointments.length; i++) {
+					appointments[i].start = moment.utc(appointments[i].start).toDate();
+					appointments[i].end = moment.utc(appointments[i].end).toDate();
+				}
+				this.setState({
+					events: appointments
+				})
+			})
+			.catch(err => {
+			console.log(err);
+		})
+	}
 
 	render() {
 		return (
-			<ScheduleComponent
-				currentView={'Month'}
-				eventSettings={this.remoteData}
-				allowResizing={true}
-			>
-				<Inject services={ [Day, Week, WorkWeek, Month] } />
-			</ScheduleComponent>
-		)
+			<div className="App">
+				<Calendar
+					selectable
+					localizer={localizer}
+					defaultDate={new Date()}
+					defaultView="month"
+					events={this.state.events}
+					style={{ height: "100vh" }}
+					onSelectEvent={event => alert(event.title)}
+					onSelectSlot={this.handleSelect}
+				/>
+			</div>
+		);
 	}
 }
 
-export default Calendar;
+export default Scheduler;
