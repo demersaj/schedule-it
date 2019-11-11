@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import GoogleButton from '../../containers/Auth/Auth';
-import divWithClassName from 'react-bootstrap/esm/utils/divWithClassName';
+import Aux from '../../containers/Aux';
 
 class Home extends Component {
-
 	render () {
 		return (
-			<div>
+			<Aux>
 				<div>
 					<h4>Welcome to Schedule-It.</h4>
 					<p>Please login to continue.</p>
@@ -14,7 +13,7 @@ class Home extends Component {
 				<div>
 					<GoogleButton />
 				</div>
-			</div>
+			</Aux>
 		)
 	}
 }

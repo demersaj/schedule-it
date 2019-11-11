@@ -1,77 +1,62 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
-import moment from "moment";
+import Modal, { closeStyle } from 'simple-react-modal'
+import moment from 'moment';
 import axios from 'axios';
 
+import FormComponent from '../Form/Form';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 const localizer = momentLocalizer(moment);
-const propTypes = {};
 
 class Scheduler extends Component {
 	constructor(props) {
 		super(props);
 
+		this.close = this.close.bind(this);
+
 		this.state = {
 			events: [],
 			event: {
-				id: null,
+				id: '',
 				start: '',
 				end: '',
 				title: '',
 				location: '',
-				num_people: 0
+				num_people: '',
+				owner: ''
 			}
-		}
+		};
 	}
 
-	handleSelect = async ({ start, end }) => {
-		let title, location, num_people;
-		title = window.prompt('New Event name');
-		if (title) location = window.prompt('New Event location');
-		if (location) num_people = window.prompt('Number of people meeting.');
-		let postPromise;
-		if (num_people) {
-			try {
-				postPromise = await axios.post('http://localhost:8000/slots/',
-					{
-						title: title,
-						start: start,
-						end: end,
-						location: location,
-						owner: "1",
-						num_people: num_people
-					}).catch(console.log("caught"));
 
-				this.setState({
-					events: [
-						...this.state.events,
-						{
-							start,
-							end,
-							title,
-						},
-					],
-				})
-			} catch (err) {
-				console.log(start);
-				console.log(end);
-				console.log("Error Caught");
-				console.log(err.response.data);
-				alert("Event could not be created\nSee log for details.")
-			}
-		}
+
+	show() {
+		this.setState({show: true})
 	}
 
+	close() {
+		this.setState({show: false})
+	}
+
+	handleSelect = ({ start, end }) => {
+		this.setState({
+			show: true,
+			start: start,
+			end: end
+		})
+	};
 
 	eventDisplay = ({ event	}) => {
 		return (
 			<span>
 				{event.title}
 				<p>Location: {event.location}</p>
+				<p>Num People: {event.num_people}</p>
 			</span>
 		)
-	}
+	};
+
 
 	componentDidMount() {
 		axios.get('http://localhost:8000/slots/')
@@ -95,6 +80,22 @@ class Scheduler extends Component {
 	render() {
 		return (
 			<div className="App">
+				<Modal
+					containerClassName="test"
+					closeOnOuterClick={true}
+					show={this.state.show}
+					onClose={this.close.bind(this)}>
+
+					<a style={closeStyle} onClick={this.close.bind(this)}>X</a>
+					<div>
+						<FormComponent
+							start={moment(this.state.start).format()}
+							end={moment(this.state.end).format()}
+							action={this.close }
+						/>
+					</div>
+				</Modal>
+
 				<Calendar
 					selectable
 					localizer={localizer}
@@ -104,9 +105,7 @@ class Scheduler extends Component {
 					style={{ height: "100vh" }}
 					onSelectEvent={event => alert(event.title)}
 					onSelectSlot={this.handleSelect}
-					components= {{
-						event: this.eventDisplay
-					}}
+					components={{ event: this.eventDisplay }}
 				/>
 			</div>
 		);

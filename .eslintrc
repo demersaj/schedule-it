@@ -13,6 +13,7 @@
 	"implicit-arrow-linebreak": "off",
 	"comma-dangle": "warn",
 	"indent": "off",
-	"no-trailing-spaces": "warn"
+	"no-trailing-spaces": "warn",
+	"no-restricted-globals": "warn"
   }
 }
