@@ -44,6 +44,8 @@ class FormComponent extends Component {
 	};
 
 	render() {
+		let userData = JSON.parse(sessionStorage.getItem('userData'));
+		let onid = userData.onid;
 		return (
 			<Aux>
 				<h4>Create New Slot</h4>
@@ -85,10 +87,11 @@ class FormComponent extends Component {
 					       onChange={e => this.setState( {num_people: e.target.value})}
 					/>
 
-					<input type='number'
+					<input type='text'
 					       name='owner'
 					       placeholder={'Owner'}
-					       value={this.state.owner}
+					       value={this.state.onid}
+					       defaultValue={onid}
 					       onChange={e => this.setState( {owner: e.target.value})}
 					/>
 					<button

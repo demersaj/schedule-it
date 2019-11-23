@@ -17,7 +17,9 @@ class Home extends Component {
 	componentDidMount() {
 		let data = JSON.parse(sessionStorage.getItem('userData'));
 		console.log(data);
-		this.setState({ name: data.firstName + ' ' + data.lastName })
+		if (data) {
+			this.setState({ name: data.firstName + ' ' + data.lastName })
+		}
 	}
 
 	render () {
@@ -25,7 +27,6 @@ class Home extends Component {
 			<Aux>
 				<div>
 					<h4>Welcome to Schedule-It, {this.state.name}.</h4>
-					<p>Please login to continue.</p>
 				</div>
 				<div>
 					<Auth />

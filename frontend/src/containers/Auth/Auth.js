@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import GoogleLogin from 'react-google-login';
+import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import axios from 'axios';
+import Aux from '../Aux';
 
 const baseURL = 'http://localhost:8000/users/';
 
@@ -47,10 +48,11 @@ class Auth extends Component {
 			};
 		}
 
-		axios.get(baseURL + user.onid)
+		axios.get(baseURL /*+ user.onid*/)
 			.then(res => {
 				if (res) {  // user exists
-					user.id = res.id;
+					console.log(res);
+					user.id = res.data.id;
 					sessionStorage.setItem('userData', JSON.stringify(user));
 					this.setState({redirect: true});
 				} else { // sign up user
@@ -61,26 +63,51 @@ class Auth extends Component {
 
 	render() {
 		let userData = JSON.parse(sessionStorage.getItem('userData'));
-		if (this.state.redirect || userData.signedIn === true) {
-			return (<Redirect to={'/slots'}/>)
+		if (this.state.redirect && userData) {
+			if (userData.signedIn === true) {
+				return (<Redirect to={'/slots'} />)
+			}
 		}
 
 		const responseGoogle = (res) => {
 			this.login(res, 'google');
 		};
 
+		const logoutGoogle = () => {
+			let userData = JSON.parse(sessionStorage.getItem('userData'));
+			userData.signedIn = false;
+			sessionStorage.setItem('userData', JSON.stringify(userData));
+			console.log('user logged out');
+			window.location.reload(true);
+		}
+
+		if (!userData || userData.signedIn === false) {
 		return (
-			<GoogleLogin
-				clientId="97035292419-vtd1vjmj9rbg3s1qlprnjrquecmkn0m8.apps.googleusercontent.com"
-				buttonText="Login"
-				onSuccess={responseGoogle}
-				onFailure={responseGoogle}
-				cookiePolicy={'single_host_origin'}
-				// redirectUri='http://localhost:3000/reservations'
-				// uxMode='script'
-				// hostedDomain='https://apis.google.com/js/platform.js'
-			/>
-		)
+			<Aux>
+				<p>Please login to continue.</p>
+				<GoogleLogin
+					clientId="97035292419-vtd1vjmj9rbg3s1qlprnjrquecmkn0m8.apps.googleusercontent.com"
+					buttonText='Login'
+					onSuccess={responseGoogle}
+					onFailure={responseGoogle}
+					cookiePolicy={'single_host_origin'}
+					// redirectUri='http://localhost:3000/reservations'
+					// uxMode='script'
+					// hostedDomain='https://apis.google.com/js/platform.js'
+				/>
+			</Aux>
+		)}
+		else if (userData.signedIn === true) {
+			return (
+				<GoogleLogout
+					clientId="97035292419-vtd1vjmj9rbg3s1qlprnjrquecmkn0m8.apps.googleusercontent.com"
+					onLogoutSuccess={logoutGoogle}
+					onFailure={error => console.log(error)}
+					buttonText='Logout'
+				/>
+			)
+		}
+
 	}
 }
 

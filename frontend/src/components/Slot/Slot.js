@@ -27,9 +27,8 @@ class Scheduler extends Component {
 				title: '',
 				location: '',
 				num_people: '',
-				owner: ''
+				owner: '',
 			},
-			loggedIn: true
 		};
 	}
 
@@ -39,6 +38,14 @@ class Scheduler extends Component {
 
 	close() {
 		this.setState({show: false})
+	}
+
+	showSlot() {
+		this.setState({showSlot: true})
+	}
+
+	closeSlot() {
+		this.setState({showSlot: false})
 	}
 
 	handleSelect = ({ start, end }) => {
@@ -59,14 +66,17 @@ class Scheduler extends Component {
 		)
 	};
 
-	handleEventSelect = ( {event} ) => {
-
-	}
+	handleEventSelect = event => {
+		this.setState({
+			showSlot: true,
+			event: event
+		});
+	};
 
 
 	componentDidMount() {
 		let userData = JSON.parse(sessionStorage.getItem('userData'));
-		axios.get(baseURL + userData.onid)
+		axios.get(baseURL /* + userData.onid */)
 			.then(res => {
 				let appointments = res.data;
 
@@ -85,18 +95,21 @@ class Scheduler extends Component {
 
 	render() {
 		let userData = JSON.parse(sessionStorage.getItem('userData'));
-		if (this.state.loggedIn === false || userData.signedIn === false) {
+		if (!userData) {
+			return (<Redirect to={'/'} />)
+		} else if (userData.signedIn === false) {
 			return (<Redirect to={'/'}/>)
 		}
+
 
 		return (
 			<div className="App">
 				<h2>Select or create a slot</h2>
 				<Modal
-					containerClassName="test"
 					closeOnOuterClick={true}
 					show={this.state.show}
-					onClose={this.close.bind(this)}>
+					onClose={this.close.bind(this)}
+				>
 
 					<a style={closeStyle} onClick={this.close.bind(this)}>X</a>
 					<div>
@@ -108,8 +121,23 @@ class Scheduler extends Component {
 					</div>
 				</Modal>
 
+				<Modal
+					closeOnOuterClick={true}
+					show={this.state.showSlot}
+					onClose={this.closeSlot.bind(this)}
+					>
+					<span>
+						<h4>{this.state.event.title}</h4>
+						<p>Start: {moment(this.state.start).format().substring(0, 16)}</p>
+						<p>End: {moment(this.state.end).format().substring(0, 16)}</p>
+						<p>Location: {this.state.event.location}</p>
+						<p>Num people: {this.state.event.num_people}</p>
+					</span>
+				</Modal>
+
 				<Calendar
 					selectable
+					popup
 					localizer={localizer}
 					defaultDate={new Date()}
 					defaultView="month"
