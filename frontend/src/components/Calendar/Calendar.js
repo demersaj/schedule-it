@@ -3,9 +3,12 @@ import { Calendar, momentLocalizer } from 'react-big-calendar';
 import Modal, { closeStyle } from 'simple-react-modal'
 import moment from 'moment';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 
 import FormComponent from '../Form/Form';
 import "react-big-calendar/lib/css/react-big-calendar.css";
+
+const baseURL = 'http://localhost:8000/slots/';
 
 const localizer = momentLocalizer(moment);
 
@@ -25,11 +28,10 @@ class Scheduler extends Component {
 				location: '',
 				num_people: '',
 				owner: ''
-			}
+			},
+			loggedIn: true
 		};
 	}
-
-
 
 	show() {
 		this.setState({show: true})
@@ -59,9 +61,9 @@ class Scheduler extends Component {
 
 
 	componentDidMount() {
-		axios.get('http://localhost:8000/slots/')
+		let userData = JSON.parse(sessionStorage.getItem('userData'));
+		axios.get(baseURL + '?owner=' + userData.onid)
 			.then(res => {
-				console.log(res.data);
 				let appointments = res.data;
 
 				for (let i = 0; i < appointments.length; i++) {
@@ -78,6 +80,10 @@ class Scheduler extends Component {
 	}
 
 	render() {
+		let userData = JSON.parse(sessionStorage.getItem('userData'));
+		if (this.state.loggedIn === false || userData.signedIn === false) {
+			return (<Redirect to={'/'}/>)
+		}
 		return (
 			<div className="App">
 				<Modal
