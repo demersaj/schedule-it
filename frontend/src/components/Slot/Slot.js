@@ -59,10 +59,14 @@ class Scheduler extends Component {
 		)
 	};
 
+	handleEventSelect = ( {event} ) => {
+
+	}
+
 
 	componentDidMount() {
 		let userData = JSON.parse(sessionStorage.getItem('userData'));
-		axios.get(baseURL + '?owner=' + userData.onid)
+		axios.get(baseURL + userData.onid)
 			.then(res => {
 				let appointments = res.data;
 
@@ -84,8 +88,10 @@ class Scheduler extends Component {
 		if (this.state.loggedIn === false || userData.signedIn === false) {
 			return (<Redirect to={'/'}/>)
 		}
+
 		return (
 			<div className="App">
+				<h2>Select or create a slot</h2>
 				<Modal
 					containerClassName="test"
 					closeOnOuterClick={true}
@@ -109,7 +115,7 @@ class Scheduler extends Component {
 					defaultView="month"
 					events={this.state.events}
 					style={{ height: "100vh" }}
-					onSelectEvent={event => alert(event.title)}
+					onSelectEvent={this.handleEventSelect}
 					onSelectSlot={this.handleSelect}
 					components={{ event: this.eventDisplay }}
 				/>

@@ -46,7 +46,8 @@ class Auth extends Component {
 				id: null
 			};
 		}
-		axios.get(baseURL + '?onid=' + user.onid)
+
+		axios.get(baseURL + user.onid)
 			.then(res => {
 				if (res) {  // user exists
 					user.id = res.id;
@@ -61,7 +62,7 @@ class Auth extends Component {
 	render() {
 		let userData = JSON.parse(sessionStorage.getItem('userData'));
 		if (this.state.redirect || userData.signedIn === true) {
-			return (<Redirect to={'/reservations'}/>)
+			return (<Redirect to={'/slots'}/>)
 		}
 
 		const responseGoogle = (res) => {
