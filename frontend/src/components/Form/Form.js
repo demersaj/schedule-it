@@ -31,17 +31,38 @@ class FormComponent extends Component {
 
 			data: {
 				title: this.state.title,
-				start: this.state.start === '' ? this.props.start: this.state.start,
-				end: this.state.end === '' ? this.props.end: this.state.end,
+				start:this.props.start,
+				end: this.props.end,
 				location: this.state.location,
 				num_people: this.state.num_people,
 				owner: this.state.owner
 				}
-		}).catch(err => {
+		}).then(res => this.createReservation(res))
+			.then(res => console.log(res))
+			.catch(err => {
 			console.log(err);
 		})
-
 	};
+
+	// creates a reservation using a response from the slot creation
+	createReservation = async (res) => {
+		let userData = JSON.parse(sessionStorage.getItem('userData'));
+
+		axios({
+			"headers": {
+				"Content-Type": "application/json"
+			},
+			method: 'post',
+			url: 'http://localhost:8000/api/reservations/',
+
+			data: {
+				user: userData.id,
+				slot: res.data.id
+			}
+		})
+	};
+
+
 
 	render() {
 		let userData = JSON.parse(sessionStorage.getItem('userData'));

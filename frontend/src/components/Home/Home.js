@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
 import Auth from '../../containers/Auth/Auth';
 import Aux from '../../containers/Aux';
-import GoogleLogin from 'react-google-login';
 
 
 class Home extends Component {
@@ -17,8 +15,8 @@ class Home extends Component {
 	componentDidMount() {
 		let data = JSON.parse(sessionStorage.getItem('userData'));
 		console.log(data);
-		if (data) {
-			this.setState({ name: data.firstName + ' ' + data.lastName })
+		if (data && data.signedIn === true) {
+			this.setState({ name: ', ' + data.firstName + ' ' + data.lastName})
 		}
 	}
 
@@ -26,7 +24,7 @@ class Home extends Component {
 		return (
 			<Aux>
 				<div>
-					<h4>Welcome to Schedule-It, {this.state.name}.</h4>
+					<h4>Welcome to Schedule-It{this.state.name}.</h4>
 				</div>
 				<div>
 					<Auth />

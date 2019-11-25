@@ -30,4 +30,6 @@ urlpatterns = [
 	path('users/', views.UserList.as_view()),
     path('files/<int:pk>/', views.FileDetail.as_view()),
 	path('files/', views.FileList.as_view()),
+	path('users/<onid>/reservations/', views.ReservationListByOnid.as_view()),
+    path('users/<onid>/slots/', views.SlotListByOnid.as_view()),
 ]

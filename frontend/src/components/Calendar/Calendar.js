@@ -29,6 +29,7 @@ class Scheduler extends Component {
 				num_people: '',
 				owner: '',
 			},
+			people: []
 		};
 	}
 
@@ -73,7 +74,6 @@ class Scheduler extends Component {
 		});
 	};
 
-
 	componentDidMount() {
 		let userData = JSON.parse(sessionStorage.getItem('userData'));
 		axios.get(baseURL /* + userData.onid */)
@@ -93,6 +93,12 @@ class Scheduler extends Component {
 		})
 	}
 
+	// get list of user's in a reservation
+	getReservation = () => {
+		axios.get('http://localhost:8000/reservations/' + this.state.event.id)
+			.then(res => console.log(res));
+	};
+
 	render() {
 		let userData = JSON.parse(sessionStorage.getItem('userData'));
 		if (!userData) {
@@ -104,7 +110,7 @@ class Scheduler extends Component {
 
 		return (
 			<div className="App">
-				<h2>Select or create a slot</h2>
+				<h3>Select or create a reservation</h3>
 				<Modal
 					closeOnOuterClick={true}
 					show={this.state.show}
@@ -116,7 +122,7 @@ class Scheduler extends Component {
 						<FormComponent
 							start={moment(this.state.start).format()}
 							end={moment(this.state.end).format()}
-							action={this.close }
+							action={this.close}
 						/>
 					</div>
 				</Modal>
@@ -132,6 +138,17 @@ class Scheduler extends Component {
 						<p>End: {moment(this.state.end).format().substring(0, 16)}</p>
 						<p>Location: {this.state.event.location}</p>
 						<p>Num people: {this.state.event.num_people}</p>
+						<p>Attendees: {this.getReservation()}</p>
+						<p>Add attendee:
+							<input type='text'
+	                            name='attendee'
+	                            placeholder={'Attendee\'s ONID'}
+	                            value={this.state.location}
+	                            onChange={e => this.setState( {location: e.target.value})}
+							/>
+						</p>
+						<button onClick={this.handleSubmit}>Submit</button>
+						<button onClick={this.handleDelete}>Delete</button>
 					</span>
 				</Modal>
 

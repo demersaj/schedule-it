@@ -228,6 +228,29 @@ class FileDetail(APIView):
         file.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+class SlotListByOnid(APIView):
+    """
+    List all slots with an onid, or create a new slot.
+    """
+    queryset = Slot.objects.none()
+    def get(self, request, onid, format=None):
+        user_id = User.objects.get(onid=onid)
+        slots = Slot.objects.filter(owner=user_id)
+        serializer = SlotSerializer(slots, many=True)
+        return Response(serializer.data)
+
+class ReservationListByOnid(APIView):
+    """
+    List all slots, or create a new slot.
+    """
+    queryset = Reservation.objects.none()
+    def get(self, request, onid, format=None):
+        user_id = ScheduleUser.objects.get(onid=onid)
+        reservations = Reservation.objects.filter(user=user_id)
+        serializer = ReservationSerializer(reservations, many=True)
+        return Response(serializer.data)
+
 def logout(request):
     auth_logout(request)
     return redirect('/')
@@ -247,7 +270,6 @@ FLOW = flow_from_clientsecrets(
     scope='https://apis.google.com/js/platform.js',
     redirect_uri='http://localhost:8000/oauth2callback',
     prompt='consent')
-
 
 def authenticate(request):
     storage = DjangoORMStorage(CredentialsModel, 'id', request.user, 'credential')
