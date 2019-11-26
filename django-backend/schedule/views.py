@@ -29,8 +29,8 @@ requests_toolbelt.adapters.appengine.monkeypatch()
 
 # These should be copied from an OAuth2 Credential section at
 # https://console.cloud.google.com/apis/credentials
-client_id = r'636078506451-63230cnsvcb94hphlfnisme1onj2bbba.apps.googleusercontent.com'
-client_secret = r'c8m_3UjbWE37L6l5RmSEYxeU'
+client_id = r'removed'
+client_secret = r'removed'
 
 # This is the page that you will use to decode and collect the info from
 # the Google authentication flow
