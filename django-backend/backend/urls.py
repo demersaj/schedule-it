@@ -20,7 +20,7 @@ from schedule import views
 urlpatterns = [
     url(r'^$', views.index),
 	url('oauthredirect/', views.oauthredirect),
-    url(r'^admin/$', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls)),
 	url(r'^scheduleusers/$', views.ScheduleUserList.as_view()),
 	url(r'^scheduleuser/(?P<pk>[0-9]+)/$', views.ScheduleUserDetail.as_view()),
 	url(r'^slots/$', views.SlotList.as_view()),

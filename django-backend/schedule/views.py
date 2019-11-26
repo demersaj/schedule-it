@@ -119,9 +119,11 @@ class ScheduleUserDetail(APIView):
     Retrieve, update or delete a user instance.
     """
     queryset = ScheduleUser.objects.none()
-    def get_object(self, request, pk, format=None):
-        user = self.get_object(pk)
-        serializer = ScheduleUserSerializer(user)
+    def get(self, request, pk, format=None):
+        suser = ScheduleUser.objects.filter(id=pk)
+        if(len(suser) == 0):
+            raise Http404
+        serializer = ScheduleUserSerializer(suser, many=True)
         return Response(serializer.data)
 
 class SlotList(APIView):
@@ -146,10 +148,17 @@ class SlotDetail(APIView):
     Retrieve, update or delete a slot instance.
     """
     queryset = Slot.objects.none()
+    def get(self, request, pk, format=None):
+        slot = Slot.objects.filter(id=pk)
+        if(len(slot) == 0):
+            raise Http404
+        serializer = SlotSerializer(slot, many=True)
+        return Response(serializer.data)
+
     def get_object(self, pk):
         try:
-            return Slot.objects.get(pk=pk)
-        except Slot.DoesNotExist:
+            return Slot.objects.get(id=pk)
+        except File.DoesNotExist:
             raise Http404
 
     def put(self, request, pk, format=None):
@@ -211,10 +220,17 @@ class ReservationDetail(APIView):
     Retrieve, update or delete a reservation instance.
     """
     queryset = Reservation.objects.none()
+    def get(self, request, pk, format=None):
+        reservation = Reservation.objects.filter(id=pk)
+        if(len(reservation) == 0):
+            raise Http404
+        serializer = ReservationSerializer(reservation, many=True)
+        return Response(serializer.data)
+
     def get_object(self, pk):
         try:
-            return Reservation.objects.get(pk=pk)
-        except Reservation.DoesNotExist:
+            return Reservation.objects.get(id=pk)
+        except File.DoesNotExist:
             raise Http404
 
     def put(self, request, pk, format=None):
@@ -255,11 +271,12 @@ class FileDetail(APIView):
     Retrieve or delete a file instance.
     """
     queryset = File.objects.none()
-    def get_object(self, pk):
-        try:
-            return File.objects.get(pk=pk)
-        except File.DoesNotExist:
+    def get(self, request, pk, format=None):
+        file = File.objects.filter(id=pk)
+        if(len(file) == 0):
             raise Http404
+        serializer = FileSerializer(file, many=True)
+        return Response(serializer.data)
 
     def delete(self, request, pk, format=None):
         file = self.get_object(pk)
