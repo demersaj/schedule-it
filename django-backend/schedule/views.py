@@ -29,8 +29,8 @@ requests_toolbelt.adapters.appengine.monkeypatch()
 
 # These should be copied from an OAuth2 Credential section at
 # https://console.cloud.google.com/apis/credentials
-client_id = r'REMOVED FOR GITHUB'
-client_secret = r'REMOVED FOR GITHUB'
+client_id = r'636078506451-63230cnsvcb94hphlfnisme1onj2bbba.apps.googleusercontent.com'
+client_secret = r'c8m_3UjbWE37L6l5RmSEYxeU'
 
 # This is the page that you will use to decode and collect the info from
 # the Google authentication flow
@@ -52,8 +52,7 @@ from schedule.models import ScheduleUser, Reservation, File, Slot
 from schedule.serializers import ScheduleUserSerializer, ReservationSerializer, FileSerializer, SlotSerializer
 
 intro ="""
-
-<h1>Hello, world. You're at the schedule index.</h1>
+<h1>Can, do. You're at the schedule-it! index.</h1>
 <p>Here are the URLs for the REST API and what they do:</p>
 <h2>GET Requests</h2>
 <p><a href=/scheduleusers/>/scheduleusers/</a> returns a list of all the schedulerusers</p>
@@ -61,10 +60,13 @@ intro ="""
 <p><a href=/reservations/>/reservations/</a> returns a list of all the reservations</p>
 <p><a href=/files/>/files/</a> returns a list of all the files</p>
 <p><a href=/slot/1/scheduleusers/>/slot/{slot_id}/scheduleusers/</a> returns a list of all ScheduleUsers registered for a slot.</p>
+<p><a href=/scheduleuser/slots>/scheduleuser/slots/</a> returns a list a slots created by the authenticated user.</p>
+<p><a href=/scheduleuser/reservations>/scheduleuser/reservations/</a> returns a list a reservations created by the authenticated user.</p>
 <p><a href=/scheduleuser/1/>/scheduleuser/{scheduleuser_id}/</a> returns a scheduleruser with {scheduleuser_id}</p>
 <p><a href=/slot/1/>/slot/{slot_id}/</a> returns a slot with {slot_id}</p>
 <p><a href=/reservation/1/>/reservation/{resrvation_id}</a> returns a reservations with {reservation_id}</p>
 <p><a href=/file/1/>/file/{file_id}/</a> returns a file with {file_id}</p>
+
 <h2>POST Requests</h2>
 <p><a href=/scheduleusers/>/scheduleusers/</a> is not used a security feature. Users can only be created with manage.py createuser or createsuperuser. In the final version there will be no superusers.</p>
 <p><a href=/slots/>/slots/</a> creates a slot if the user has permission to create a timeslot.</p>
@@ -165,6 +167,17 @@ class SlotDetail(APIView):
         slot.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+class SlotListByUser(APIView):
+    """
+    List all slots, or create a new slot.
+    """
+    queryset = Reservation.objects.none()
+    def get(self, request, format=None):
+        #user_id = ScheduleUser.objects.get(owner=request.user)
+        slots = Slot.objects.filter(owner=request.user)
+        serializer = SlotSerializer(slots, many=True)
+        return Response(serializer.data)
+
 class ReservationList(APIView):
     """
     List all reservations, or create a new reservation.
@@ -182,14 +195,14 @@ class ReservationList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class ReservationListByOnid(APIView):
+class ReservationListByUser(APIView):
     """
     List all slots, or create a new slot.
     """
     queryset = Reservation.objects.none()
-    def get(self, request, onid, format=None):
-        user_id = ScheduleUser.objects.get(onid=onid)
-        reservations = Reservation.objects.filter(user=user_id)
+    def get(self, request, format=None):
+        #user_id = ScheduleUser.objects.get(owner=request.user)
+        reservations = Reservation.objects.filter(owner=request.user)
         serializer = ReservationSerializer(reservations, many=True)
         return Response(serializer.data)
 
