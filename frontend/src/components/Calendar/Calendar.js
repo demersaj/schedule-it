@@ -8,7 +8,7 @@ import { Redirect } from 'react-router-dom';
 import FormComponent from '../Form/Form';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
-const baseURL = 'http://localhost:8000/slots/';
+const baseURL = ' https://cs467-backend-nc.appspot.com/slots/';
 
 const localizer = momentLocalizer(moment);
 
@@ -29,7 +29,8 @@ class Scheduler extends Component {
 				num_people: '',
 				owner: '',
 			},
-			people: []
+			people: [],
+			reservation: '',
 		};
 	}
 
@@ -57,6 +58,25 @@ class Scheduler extends Component {
 		})
 	};
 
+	handleEventSelect = event => {
+		this.setState({
+			showSlot: true,
+			event: event
+		});
+	};
+
+	handleDelete = () => {
+		let userData = JSON.parse(sessionStorage.getItem('userData'));
+		axios({
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization : 'Bearer ' + userData.token
+			},
+			method: 'delete',
+			url: baseURL + this.state.reservation
+		})
+	};
+
 	eventDisplay = ({ event	}) => {
 		return (
 			<span>
@@ -67,37 +87,49 @@ class Scheduler extends Component {
 		)
 	};
 
-	handleEventSelect = event => {
-		this.setState({
-			showSlot: true,
-			event: event
-		});
+	// TODO: finish display
+	// get list of users in a reservation
+	getReservation = () => {
+		let userData = JSON.parse(sessionStorage.getItem('userData'));
+		axios({
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization : 'Bearer ' + userData.token
+			},
+			method: 'get',
+			url: 'https://cs467-backend-nc.appspot.com/reservations/' + this.state.reservation
+		}).then(res => console.log(res))
+			.then(res => {
+				this.setState({
+					reservation: res.data.id
+				})
+			})
 	};
+
 
 	componentDidMount() {
 		let userData = JSON.parse(sessionStorage.getItem('userData'));
-		axios.get(baseURL /* + userData.onid */)
-			.then(res => {
-				let appointments = res.data;
+		axios({
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization : 'Bearer ' + userData.token
+			},
+			method: 'get',
+			url: baseURL + userData.id
+		}).then(res => {
+			let appointments = res.data;
 
-				for (let i = 0; i < appointments.length; i++) {
-					appointments[i].start = moment.utc(appointments[i].start).toDate();
-					appointments[i].end = moment.utc(appointments[i].end).toDate();
-				}
-				this.setState({
-					events: appointments
-				})
+			for (let i = 0; i < appointments.length; i++) {
+				appointments[i].start = moment.utc(appointments[i].start).toDate();
+				appointments[i].end = moment.utc(appointments[i].end).toDate();
+			}
+			this.setState({
+				events: appointments
 			})
-			.catch(err => {
+		}).catch(err => {
 			console.log(err);
 		})
 	}
-
-	// get list of user's in a reservation
-	getReservation = () => {
-		axios.get('http://localhost:8000/reservations/' + this.state.event.id)
-			.then(res => console.log(res));
-	};
 
 	render() {
 		let userData = JSON.parse(sessionStorage.getItem('userData'));
@@ -138,7 +170,7 @@ class Scheduler extends Component {
 						<p>End: {moment(this.state.end).format().substring(0, 16)}</p>
 						<p>Location: {this.state.event.location}</p>
 						<p>Num people: {this.state.event.num_people}</p>
-						<p>Attendees: {this.getReservation()}</p>
+						<p>Attendees: {this.getReservation}</p>
 						<p>Add attendee:
 							<input type='text'
 	                            name='attendee'
