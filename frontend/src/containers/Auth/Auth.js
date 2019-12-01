@@ -4,7 +4,7 @@ import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import axios from 'axios';
 import Aux from '../Aux';
 
-const baseURL = ' https://cs467-backend-nc.appspot.com/scheduleusers/';
+const baseURL = 'https://cs467-backend-nc.appspot.com/scheduleusers/';
 
 class Auth extends Component {
 	constructor(props) {
@@ -46,7 +46,7 @@ class Auth extends Component {
 				onid: res.w3.U3.slice(0, res.w3.U3.length - 16),
 				token: res.Zi.id_token,
 				signedIn: true,
-				id: null
+				id: ''
 			};
 		}
 
@@ -56,15 +56,15 @@ class Auth extends Component {
 				Authorization : 'Bearer ' + user.token
 			},
 			method: 'get',
-			url: baseURL //+ user.onid
+			url: baseURL
 		}).then(res => {
 			if (res) {  // user exists
 				console.log(res);
-				user.id = res.data.id;
+				user.id = res.data[0].id;
 				sessionStorage.setItem('userData', JSON.stringify(user));
 				this.setState({redirect: true});
 			} else { // sign up user
-				this.signupUser(user);
+				//this.signupUser(user);
 			}
 		})
 

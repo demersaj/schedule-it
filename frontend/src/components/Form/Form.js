@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Aux from '../../containers/Aux';
 import axios from 'axios';
 
+const baseURL = 'https://cs467-backend-nc.appspot.com/slots/';
+
 class FormComponent extends Component {
 	constructor( props ) {
 		super(props);
@@ -21,21 +23,22 @@ class FormComponent extends Component {
 
 	handleSubmit = async (e) => {
 		//e.preventDefault();
-
+		let userData = JSON.parse(sessionStorage.getItem('userData'));
+		let id = userData.id;
 		axios({
-			"headers": {
-				"Content-Type": "application/json"
+			'headers': {
+				'Content-Type': 'application/json',
+				Authorization : 'Bearer ' + userData.token
 			},
 			method: 'post',
-			url: 'http://localhost:8000/api/slots/',
-
+			url: baseURL,
 			data: {
 				title: this.state.title,
 				start:this.props.start,
 				end: this.props.end,
 				location: this.state.location,
 				num_people: this.state.num_people,
-				owner: this.state.owner
+				owner: id
 				}
 		}).then(res => this.createReservation(res))
 			.then(res => console.log(res))
@@ -53,7 +56,7 @@ class FormComponent extends Component {
 				"Content-Type": "application/json"
 			},
 			method: 'post',
-			url: 'http://localhost:8000/api/reservations/',
+			url: 'https://cs467-backend-nc.appspot.com/scheduleuser/reservations/',
 
 			data: {
 				user: userData.id,
@@ -66,7 +69,7 @@ class FormComponent extends Component {
 
 	render() {
 		let userData = JSON.parse(sessionStorage.getItem('userData'));
-		let onid = userData.onid;
+		let id = userData.id;
 		return (
 			<Aux>
 				<h4>Create New Slot</h4>
@@ -107,18 +110,7 @@ class FormComponent extends Component {
 					       value={this.state.num_people}
 					       onChange={e => this.setState( {num_people: e.target.value})}
 					/>
-
-					<input type='text'
-					       name='owner'
-					       placeholder={'Owner'}
-					       value={this.state.onid}
-					       defaultValue={onid}
-					       onChange={e => this.setState( {owner: e.target.value})}
-					/>
-					<button
-						onClick={this.handleSubmit}
-						//onClick={this.props.action}
-					>Submit</button>
+					< button onClick={this.handleSubmit}>Submit</button>
 				</form>
 			</Aux>
 		)

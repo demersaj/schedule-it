@@ -8,8 +8,7 @@ import { Redirect } from 'react-router-dom';
 import FormComponent from '../Form/Form';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
-const baseURL = ' https://cs467-backend-nc.appspot.com/slots/';
-
+const baseURL = 'https://cs467-backend-nc.appspot.com/scheduleuser/slots/';
 const localizer = momentLocalizer(moment);
 
 class Scheduler extends Component {
@@ -115,7 +114,7 @@ class Scheduler extends Component {
 				Authorization : 'Bearer ' + userData.token
 			},
 			method: 'get',
-			url: baseURL + userData.id
+			url: baseURL
 		}).then(res => {
 			let appointments = res.data;
 
@@ -148,7 +147,6 @@ class Scheduler extends Component {
 					show={this.state.show}
 					onClose={this.close.bind(this)}
 				>
-
 					<a style={closeStyle} onClick={this.close.bind(this)}>X</a>
 					<div>
 						<FormComponent
