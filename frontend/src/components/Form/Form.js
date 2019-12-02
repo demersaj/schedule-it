@@ -22,7 +22,7 @@ class FormComponent extends Component {
 	}
 
 	handleSubmit = async (e) => {
-		//e.preventDefault();
+		e.preventDefault();
 		let userData = JSON.parse(sessionStorage.getItem('userData'));
 		let id = userData.id;
 		axios({
@@ -37,8 +37,7 @@ class FormComponent extends Component {
 				start:this.props.start,
 				end: this.props.end,
 				location: this.state.location,
-				num_people: this.state.num_people,
-				owner: id
+				num_people: this.state.num_people
 				}
 		}).then(res => this.createReservation(res))
 			.then(res => console.log(res))
@@ -53,10 +52,11 @@ class FormComponent extends Component {
 
 		axios({
 			"headers": {
-				"Content-Type": "application/json"
+				"Content-Type": "application/json",
+			    Authorization : 'Bearer ' + userData.token
 			},
 			method: 'post',
-			url: 'https://cs467-backend-nc.appspot.com/scheduleuser/reservations/',
+			url: 'https://cs467-backend-nc.appspot.com/reservations/',
 
 			data: {
 				user: userData.id,

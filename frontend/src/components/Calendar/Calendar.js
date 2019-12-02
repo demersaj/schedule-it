@@ -8,7 +8,7 @@ import { Redirect } from 'react-router-dom';
 import FormComponent from '../Form/Form';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
-const baseURL = 'https://cs467-backend-nc.appspot.com/scheduleuser/slots/';
+const baseURL = 'https://cs467-backend-nc.appspot.com/slots/scheduleuser/';
 const localizer = momentLocalizer(moment);
 
 class Scheduler extends Component {
