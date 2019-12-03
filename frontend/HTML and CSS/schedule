@@ -1,0 +1,13 @@
+<DOCTYPE! html>
+<html>
+<head> 
+<link rel="stylesheet" href="styles.css", "calendar.css">
+</head>
+<body>
+
+<h1> Schedule-It!</h1>
+<p> Welcome! Please click on the days that work best for you to meet! </p>
+
+</body>
+</html> 
+
