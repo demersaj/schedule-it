@@ -27,7 +27,7 @@ class FormComponent extends Component {
 				"Content-Type": "application/json"
 			},
 			method: 'post',
-			url: 'http://localhost:8000/api/slots/',
+			url: 'http://cs467-backend-nc.appspot.com/',
 
 			data: {
 				title: this.state.title,
@@ -53,7 +53,7 @@ class FormComponent extends Component {
 				"Content-Type": "application/json"
 			},
 			method: 'post',
-			url: 'http://localhost:8000/api/reservations/',
+			url: 'http://cs467-backend-nc.appspot.com/',
 
 			data: {
 				user: userData.id,

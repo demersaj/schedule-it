@@ -8,7 +8,7 @@ import { Redirect } from 'react-router-dom';
 import FormComponent from '../Form/Form';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
-const baseURL = 'http://localhost:8000/slots/';
+const baseURL = 'http://cs467-backend-nc.appspot.com/slots/';
 
 const localizer = momentLocalizer(moment);
 
@@ -76,7 +76,11 @@ class Scheduler extends Component {
 
 	componentDidMount() {
 		let userData = JSON.parse(sessionStorage.getItem('userData'));
-		axios.get(baseURL /* + userData.onid */)
+		axios.get(baseURL, {
+			'headers': {
+				'Authorization': 'Bearer ',
+				'Content-Type': 'application/json'
+			}}/* + userData.onid */)
 			.then(res => {
 				let appointments = res.data;
 

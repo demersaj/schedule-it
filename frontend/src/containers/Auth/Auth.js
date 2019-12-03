@@ -4,7 +4,7 @@ import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import axios from 'axios';
 import Aux from '../Aux';
 
-const baseURL = 'http://localhost:8000/users/';
+const baseURL = 'http://cs467-backend-nc.appspot.com/users/';
 
 class Auth extends Component {
 	constructor(props) {
@@ -19,6 +19,7 @@ class Auth extends Component {
 	signupUser = (user) => {
 		axios({
 			'headers': {
+				'Authorization': 'Bearer ',
 				'Content-Type': 'application/json'
 			},
 			method: 'post',
@@ -48,7 +49,11 @@ class Auth extends Component {
 			};
 		}
 
-		axios.get(baseURL /*+ user.onid*/)
+		axios.get(baseURL, {
+			'headers': {
+				'Authorization': 'Bearer ',
+				'Content-Type': 'application/json'
+			}} /*+ user.onid*/)
 			.then(res => {
 				if (res) {  // user exists
 					console.log(res);
@@ -87,7 +92,7 @@ class Auth extends Component {
 			<Aux>
 				<p>Please login to continue.</p>
 				<GoogleLogin
-					clientId="97035292419-vtd1vjmj9rbg3s1qlprnjrquecmkn0m8.apps.googleusercontent.com"
+					clientId="636078506451-63230cnsvcb94hphlfnisme1onj2bbba.apps.googleusercontent.com"
 					buttonText='Login'
 					onSuccess={responseGoogle}
 					onFailure={responseGoogle}
@@ -101,7 +106,7 @@ class Auth extends Component {
 		else if (userData.signedIn === true) {
 			return (
 				<GoogleLogout
-					clientId="97035292419-vtd1vjmj9rbg3s1qlprnjrquecmkn0m8.apps.googleusercontent.com"
+					clientId="636078506451-63230cnsvcb94hphlfnisme1onj2bbba.apps.googleusercontent.com"
 					onLogoutSuccess={logoutGoogle}
 					onFailure={error => console.log(error)}
 					buttonText='Logout'

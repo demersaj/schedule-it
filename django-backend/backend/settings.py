@@ -24,17 +24,38 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 
+# These should be copied from an OAuth2 Credential section at
+# https://console.cloud.google.com/apis/credentials
+client_id = r'REMOVED FOR GITHUB'
+client_secret = r'REMOVED FOR GITHUB'
+
+# This is the page that you will use to decode and collect the info from
+# the Google authentication flow
+#redirect_uri = 'https://127.0.0.1:8000/oauthredirect/'
+redirect_uri = 'https://cs467-backend-nc.appspot.com/oauthredirect/'
+
+# These let us get basic info to identify a user and not much else
+# they are part of the Google People API
+scope = ['https://www.googleapis.com/auth/userinfo.email',
+             'https://www.googleapis.com/auth/userinfo.profile', 'openid']
+
+# MySQL database username and password.
+db_username = 'REMOVED FOR GITHUB'
+db_password = 'REMOVED FOR GITHUB'
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+#Suggested by Andrew Demers
+APPEND_SLASH = True
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'REMOVED FOR GITHUB'
+SECRET_KEY = '-c&qt=71oi^e5s8(ene*$b89^#%*0xeve$x_trs91veok9#0h0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -56,6 +77,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'schedule',
 	'rest_framework',
+	'corsheaders',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -67,7 +89,10 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+	'corsheaders.middleware.CorsMiddleware',
 )
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 SECURE_SSL_REDIRECT = True
 
@@ -109,6 +134,11 @@ except ImportError:
 
 # [START db_setup]
 if os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine'):
+	# Use the App Engine Requests adapter. This makes sure that Requests uses
+	# URLFetch.
+    import requests_toolbelt.adapters.appengine
+    requests_toolbelt.adapters.appengine.monkeypatch()
+
     # Running on production App Engine, so connect to Google Cloud SQL using
     # the unix socket at /cloudsql/<your-cloudsql-connection string>
     DATABASES = {
@@ -116,8 +146,8 @@ if os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine'):
             'ENGINE': 'django.db.backends.mysql',
             'HOST': '/cloudsql/cs467-backend-nc:us-central1:schedule-backend-instance',
             'NAME': 'schedule',
-            'USER': 'REMOVED FOR GITHUB',
-            'PASSWORD': 'REMOVED FOR GITHUB',
+            'USER': db_username,
+            'PASSWORD': db_password,
         }
     }
 else:
@@ -133,8 +163,8 @@ else:
             'HOST': '127.0.0.1',
             'PORT': '3306',
             'NAME': 'schedule',
-            'USER': 'REMOVED FOR GITHUB',
-            'PASSWORD': 'REMOVED FOR GITHUB',
+            'USER': db_username,
+            'PASSWORD': db_password,
         }
     }
 # [END db_setup]
@@ -153,6 +183,7 @@ USE_L10N = True
 USE_TZ = True
 
 
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
@@ -161,16 +192,9 @@ STATIC_URL = '/static/'
 
 REST_FRAMEWORK = {
 	 'DEFAULT_PERMISSION_CLASSES': (
-	 	 #'rest_framework.permissions.DjangoObjectPermissions',
-		 #'rest_framework.permissions.IsAuthenticated',
-		 #'rest_framework.permissions.IsAuthenticatedOrReadOnly',
 		 'schedule.permission.CustomObjectPermission',
-
      ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
 		'schedule.authentication.CustomAuthentication',
-        #'rest_framework_simplejwt.authentication.JWTAuthentication',
-		#'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  # django-oauth-toolkit >= 1.0.0
-        #'rest_framework_social_oauth2.authentication.SocialAuthentication',
     )
 }

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './User.css';
 
-const API = 'http://localhost:8000/api/users/';
+const API = 'http://cs467-backend-nc.appspot.com/scheduleusers/';
 
 class User extends Component {
 	constructor(props) {
