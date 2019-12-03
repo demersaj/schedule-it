@@ -1,0 +1,63 @@
+// source: https://yuilibrary.com/yui/docs/calendar/calendar-simple.html>
+<style>
+.yui3-button {
+    margin:10px 0px 10px 0px;
+    color: #fff;
+    background-color: #3476b7;
+}
+</style>
+
+// skin class for the calendar
+<div id="demo" class="yui3-skin-sam yui3-g"> 
+
+  <div id="leftcolumn" class="yui3-u">
+   
+   // Calendar container
+     <div id="mycalendar"></div>
+  </div>
+  <div id="rightcolumn" class="yui3-u">
+   <div id="links" style="padding-left:20px;">
+      
+      // Buttons to manipulate the calendar
+      <button id="togglePrevMonth" class="yui3-button">Toggle Previous Month's Dates</button><br>
+      <button id="toggleNextMonth" class="yui3-button">Toggle Next Month's Dates</button><br>
+      Selected date: <span id="selecteddate"></span>
+   </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
+
+    // Creates a calendars that displays the current date
+    var calendar = new Y.Calendar({
+      contentBox: "#mycalendar",
+      width:'340px',
+      showPrevMonth: true,
+      showNextMonth: true,
+      date: new Date()}).render();
+
+    var dtdate = Y.DataType.Date;
+
+    calendar.on("selectionChange", function (ev) {
+    
+      var newDate = ev.newSelection[0];
+
+      // Date formatting 
+      Y.one("#selecteddate").setHTML(dtdate.format(newDate));
+    });
+
+
+    // Shows the dates for previous months
+    Y.one("#togglePrevMonth").on('click', function (ev) {
+      ev.preventDefault();
+      calendar.set('showPrevMonth', !(calendar.get("showPrevMonth")));
+    });
+
+    // Shows the dates for subsequent months
+    Y.one("#toggleNextMonth").on('click', function (ev) {
+      ev.preventDefault();
+      calendar.set('showNextMonth', !(calendar.get("showNextMonth")));
+    });
+});
+</script>
