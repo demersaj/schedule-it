@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<body>
+
+<h1> Welcome to Schedule-It! </h1>
+<p> Schedule-It is the one-stop shop for scheduling meetings here at Oregon State. To start, click on the Schedule It! button below. </p>
+
+<button type="button"
+onclick="document.getElementById('demo').innerHTML = Date()">
+Schedule It!.</button>
+
+<p id="demo"></p>
+</body>
+</html>
