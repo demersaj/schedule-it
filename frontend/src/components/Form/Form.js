@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Aux from '../../containers/Aux';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 
 const baseURL = 'https://cs467-backend-nc.appspot.com/slots/';
 
@@ -21,8 +22,10 @@ class FormComponent extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
+	// TODO: fix submit function
 	handleSubmit = async (e) => {
 		e.preventDefault();
+
 		let userData = JSON.parse(sessionStorage.getItem('userData'));
 		let id = userData.id;
 		axios({
@@ -39,17 +42,18 @@ class FormComponent extends Component {
 				location: this.state.location,
 				num_people: this.state.num_people
 				}
-		}).then(res => this.createReservation(res))
-			.then(res => console.log(res))
+		}).then(res => this.createReservation(res.data.id))
+			.then(<Redirect to={'/reservations'} />)
+			.then(setTimeout(function(){window.location.reload(true)}, 500))
 			.catch(err => {
-			console.log(err);
-		})
+				console.log(err);
+			})
 	};
 
 	// creates a reservation using a response from the slot creation
-	createReservation = async (res) => {
+	createReservation = (id) => {
 		let userData = JSON.parse(sessionStorage.getItem('userData'));
-
+		console.log(id);
 		axios({
 			"headers": {
 				"Content-Type": "application/json",
@@ -59,13 +63,10 @@ class FormComponent extends Component {
 			url: 'https://cs467-backend-nc.appspot.com/reservations/',
 
 			data: {
-				user: userData.id,
-				slot: res.data.id
+				slot: id
 			}
 		})
 	};
-
-
 
 	render() {
 		let userData = JSON.parse(sessionStorage.getItem('userData'));

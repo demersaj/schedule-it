@@ -74,7 +74,7 @@ class Auth extends Component {
 		let userData = JSON.parse(sessionStorage.getItem('userData'));
 		if (this.state.redirect && userData) {
 			if (userData.signedIn === true) {
-				return (<Redirect to={'/calendar'} />)
+				return (<Redirect to={'/slots'} />)
 			}
 		}
 
@@ -83,12 +83,9 @@ class Auth extends Component {
 		};
 
 		const logoutGoogle = () => {
-			let userData = JSON.parse(sessionStorage.getItem('userData'));
-			userData.signedIn = false;
-			userData.token = null;
-			sessionStorage.setItem('userData', JSON.stringify(userData));
 			console.log('user logged out');
-			window.location.reload(true);
+			sessionStorage.clear();
+			(window.location.reload(true));
 		};
 
 		if (!userData || userData.signedIn === false) {

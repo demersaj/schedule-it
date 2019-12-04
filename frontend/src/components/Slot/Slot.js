@@ -2,13 +2,16 @@ import React, { Component } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import Modal, { closeStyle } from 'simple-react-modal'
 import moment from 'moment';
+import Moment from 'react-moment';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 
 import FormComponent from '../Form/Form';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
-const baseURL = 'https://cs467-backend-nc.appspot.com/slots/scheduleuser/';
+const baseURL = 'https://cs467-backend-nc.appspot.com/slots/';
+const deleteURL = 'https://cs467-backend-nc.appspot.com/slot/';
+const userURL = 'https://cs467-backend-nc.appspot.com/scheduleuser/';
 const localizer = momentLocalizer(moment);
 
 class Scheduler extends Component {
@@ -28,8 +31,9 @@ class Scheduler extends Component {
 				num_people: '',
 				owner: '',
 			},
-			people: [],
+			people: '',
 			reservation: '',
+			onid: ''
 		};
 	}
 
@@ -72,39 +76,50 @@ class Scheduler extends Component {
 				Authorization : 'Bearer ' + userData.token
 			},
 			method: 'delete',
-			url: baseURL + this.state.reservation
-		})
+			url: deleteURL + this.state.event.id + '/'
+		}).then(this.closeSlot.bind(this))
+			// let DELETE request send, then reload page
+			.then(setTimeout(function(){window.location.reload(true)}, 500));
+	};
+
+	// TODO: implement
+	handleAddAttendee = () => {
+		let userData = JSON.parse(sessionStorage.getItem('userData'));
+		axios({
+			"headers": {
+				"Content-Type": "application/json",
+				Authorization : 'Bearer ' + userData.token
+			},
+			method: 'get',
+			url: 'https://cs467-backend-nc.appspot.com/scheduleuser/' + userData.onid + '/',
+
+		}).then(res => {
+			console.log(res);
+			axios({
+				"headers": {
+					"Content-Type": "application/json",
+					Authorization : 'Bearer ' + userData.token
+				},
+				method: 'post',
+				url: 'https://cs467-backend-nc.appspot.com/reservations/',
+git 
+				data: {
+					slot: this.state.event.id
+				}
+			})
+		}).then(setTimeout(function(){window.location.reload(true)}, 500))
 	};
 
 	eventDisplay = ({ event	}) => {
 		return (
 			<span>
-				{event.title}
-				<p>Location: {event.location}</p>
-				<p>Num People: {event.num_people}</p>
+				{event.title}<br />
+				Location: {event.location}<br />
+				Num People: {event.num_people}<br />
+				Owner: {event.owner.onid}
 			</span>
 		)
 	};
-
-	// TODO: finish display
-	// get list of users in a reservation
-	getReservation = () => {
-		let userData = JSON.parse(sessionStorage.getItem('userData'));
-		axios({
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization : 'Bearer ' + userData.token
-			},
-			method: 'get',
-			url: 'https://cs467-backend-nc.appspot.com/reservations/' + this.state.reservation
-		}).then(res => console.log(res))
-			.then(res => {
-				this.setState({
-					reservation: res.data.id
-				})
-			})
-	};
-
 
 	componentDidMount() {
 		let userData = JSON.parse(sessionStorage.getItem('userData'));
@@ -116,8 +131,8 @@ class Scheduler extends Component {
 			method: 'get',
 			url: baseURL
 		}).then(res => {
+			console.log(res.data);
 			let appointments = res.data;
-
 			for (let i = 0; i < appointments.length; i++) {
 				appointments[i].start = moment.utc(appointments[i].start).toDate();
 				appointments[i].end = moment.utc(appointments[i].end).toDate();
@@ -140,8 +155,8 @@ class Scheduler extends Component {
 
 
 		return (
-			<div className="App">
-				<h3>Select or create a reservation</h3>
+			<div className='App'>
+				<h3>Select or create a slot</h3>
 				<Modal
 					closeOnOuterClick={true}
 					show={this.state.show}
@@ -162,24 +177,22 @@ class Scheduler extends Component {
 					show={this.state.showSlot}
 					onClose={this.closeSlot.bind(this)}
 					>
-					<span>
+					<a style={closeStyle} onClick={this.closeSlot.bind(this)}>X</a>
+					<div>
 						<h4>{this.state.event.title}</h4>
-						<p>Start: {moment(this.state.start).format().substring(0, 16)}</p>
-						<p>End: {moment(this.state.end).format().substring(0, 16)}</p>
-						<p>Location: {this.state.event.location}</p>
-						<p>Num people: {this.state.event.num_people}</p>
-						<p>Attendees: {this.getReservation}</p>
-						<p>Add attendee:
-							<input type='text'
-	                            name='attendee'
-	                            placeholder={'Attendee\'s ONID'}
-	                            value={this.state.location}
-	                            onChange={e => this.setState( {location: e.target.value})}
+						<p>Start: <Moment
+							date={this.state.event.start}
+						/>
+						</p>
+						<p>End: <Moment
+							date={this.state.event.end}
 							/>
 						</p>
-						<button onClick={this.handleSubmit}>Submit</button>
+						<p>Location: {this.state.event.location}</p>
+						<p>Num people: {this.state.event.num_people}</p>
+						<button onClick={this.handleAddAttendee}>Add me to reservation</button>
 						<button onClick={this.handleDelete}>Delete</button>
-					</span>
+					</div>
 				</Modal>
 
 				<Calendar
