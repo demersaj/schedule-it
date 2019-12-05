@@ -39,7 +39,7 @@ constructor(props) {
   <button type="button" class="btn btn-success btn-block" onClick={this.onClickHandler}>Upload</button>
   
   #POST request
-  axios.post("http://localhost:8000/upload", data, { // receive two parameter endpoint url ,form data 
+  axios.post(path.File, data, {
       })
       .then(res => { // then print response status
         console.log(res.statusText)
@@ -49,8 +49,7 @@ constructor(props) {
       onClickHandler = () => {
    const data = new FormData()
    data.append('file', this.state.selectedFile)
-   axios.post("http://localhost:3000/upload", data, { 
-      // receive two    parameter endpoint url ,form data
+   axios.post(path.File, data, { 
   })
 .then(res => { // then print response status
     console.log(res.statusText)
