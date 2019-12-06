@@ -7,6 +7,7 @@ import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 
 import FormComponent from '../Form/Form';
+import Aux from '../../containers/Aux';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 const baseURL = 'https://cs467-backend-nc.appspot.com/slots/';
@@ -82,7 +83,6 @@ class Scheduler extends Component {
 			.then(setTimeout(function(){window.location.reload(true)}, 500));
 	};
 
-	// TODO: implement
 	handleAddAttendee = () => {
 		let userData = JSON.parse(sessionStorage.getItem('userData'));
 		axios({
@@ -91,10 +91,9 @@ class Scheduler extends Component {
 				Authorization : 'Bearer ' + userData.token
 			},
 			method: 'get',
-			url: 'https://cs467-backend-nc.appspot.com/scheduleuser/' + userData.onid + '/',
+			url: userURL + userData.onid + '/',
 
 		}).then(res => {
-			console.log(res);
 			axios({
 				"headers": {
 					"Content-Type": "application/json",
@@ -102,12 +101,11 @@ class Scheduler extends Component {
 				},
 				method: 'post',
 				url: 'https://cs467-backend-nc.appspot.com/reservations/',
-git 
 				data: {
 					slot: this.state.event.id
 				}
 			})
-		}).then(setTimeout(function(){window.location.reload(true)}, 500))
+		}).then(setTimeout(function(){window.location.reload(true)}, 750))
 	};
 
 	eventDisplay = ({ event	}) => {
@@ -116,7 +114,6 @@ git
 				{event.title}<br />
 				Location: {event.location}<br />
 				Num People: {event.num_people}<br />
-				Owner: {event.owner.onid}
 			</span>
 		)
 	};
@@ -146,7 +143,7 @@ git
 	}
 
 	render() {
-		let userData = JSON.parse(sessionStorage.getItem('userData'));
+		const userData = JSON.parse(sessionStorage.getItem('userData'));
 		if (!userData) {
 			return (<Redirect to={'/'} />)
 		} else if (userData.signedIn === false) {
@@ -182,15 +179,23 @@ git
 						<h4>{this.state.event.title}</h4>
 						<p>Start: <Moment
 							date={this.state.event.start}
-						/>
+							format='LLL'
+							/>
 						</p>
 						<p>End: <Moment
 							date={this.state.event.end}
+							format='LLL'
 							/>
 						</p>
 						<p>Location: {this.state.event.location}</p>
 						<p>Num people: {this.state.event.num_people}</p>
-						<button onClick={this.handleAddAttendee}>Add me to reservation</button>
+						<p>Owner: {this.state.event.owner.onid}</p>
+
+						{userData.onid === this.state.event.owner.onid ? (
+							''
+						) : (
+							<Aux><button onClick={this.handleAddAttendee}>Join Reservation</button> <br/></Aux>
+						)}
 						<button onClick={this.handleDelete}>Delete</button>
 					</div>
 				</Modal>

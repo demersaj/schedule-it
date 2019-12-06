@@ -4,13 +4,13 @@ import Modal, { closeStyle } from 'simple-react-modal'
 import moment from 'moment';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
+import Moment from 'react-moment';
 import Aux from '../../containers/Aux';
 
-import FormComponent from '../Form/Form';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
-const baseURL = 'https://cs467-backend-nc.appspot.com/reservations/slots/scheduleuser/';
-const deleteURL = 'https://cs467-backend-nc.appspot.com/reservations/';
+const baseURL = 'https://cs467-backend-nc.appspot.com/reservations/';
+const deleteURL = 'https://cs467-backend-nc.appspot.com/reservation/';
 const localizer = momentLocalizer(moment);
 
 class Reservation extends Component {
@@ -30,7 +30,6 @@ class Reservation extends Component {
 				num_people: '',
 				owner: '',
 			},
-			attendee: '',
 			attendees: []
 		};
 	}
@@ -59,7 +58,6 @@ class Reservation extends Component {
 		})
 	};
 
-
 	handleEventSelect = event => {
 		this.setState({
 			showSlot: true,
@@ -67,7 +65,6 @@ class Reservation extends Component {
 		});
 	};
 
-	// TODO: Fix delete function
 	handleDelete = () => {
 		let userData = JSON.parse(sessionStorage.getItem('userData'));
 		axios({
@@ -77,15 +74,16 @@ class Reservation extends Component {
 			},
 			method: 'delete',
 			url: deleteURL + this.state.event.id + '/'
-		}).then(this.closeSlot.bind(this));
+		})//.then(setTimeout(function(){window.location.reload(true)}, 500))
 	};
+
 
 	eventDisplay = ({ event }) => {
 		return (
 			<span>
 				{event.title}<br />
 				Location: {event.location}<br />
-				Attendees: {this.state.attendees}
+				Attendees: {event.attendees[0]}
 			</span>
 		)
 	};
@@ -125,11 +123,23 @@ class Reservation extends Component {
 			url: baseURL
 		}).then(res => {
 			let events = res.data;
-			console.log(res.data);
 
 			for (let i = 0; i < events.length; i++) {
-				events[i].start = moment.utc(events[i].start).toDate();
-				events[i].end = moment.utc(events[i].end).toDate();
+				console.log(events[i]);
+				let attendees = [];
+				events[i].start = moment.utc(events[i].slot.start).toDate();
+				events[i].end = moment.utc(events[i].slot.end).toDate();
+				events[i].title = events[i].slot.title;
+				events[i].location = events[i].slot.location;
+				events[i].num_people = events[i].slot.num_people;
+				if (events[i].slot.owner) {
+					attendees.push(events[i].slot.owner.onid)
+				} if (events[i].slot.owner.onid !== events[i].owner.onid) {
+					attendees.push(', ');
+					attendees.push(events[i].owner.onid)
+				}
+				events[i].attendees = attendees;
+				console.log(events[i].attendees);
 			}
 			this.setState({
 				events: events
@@ -138,6 +148,7 @@ class Reservation extends Component {
 			console.log(err);
 		})
 	}
+
 
 	render() {
 		let userData = JSON.parse(sessionStorage.getItem('userData'));
@@ -149,7 +160,7 @@ class Reservation extends Component {
 
 		return (
 			<div className='App'>
-				<h3>Select a reservation to add attendees</h3>
+				<h3>Select a reservation to view attendees</h3>
 				<Modal
 					closeOnOuterClick={true}
 					show={this.state.showSlot}
@@ -158,11 +169,19 @@ class Reservation extends Component {
 					<a style={closeStyle} onClick={this.closeSlot.bind(this)}>X</a>
 						<span>
 							<h4>{this.state.event.title}</h4>
-							<p>Start: {moment(this.state.start).format().substring(0, 16)}</p>
-							<p>End: {moment(this.state.end).format().substring(0, 16)}</p>
+							<p>Start: <Moment
+								date={this.state.event.start}
+								format='LLL'
+								/>
+							</p>
+							<p>End: <Moment
+								date={this.state.event.end}
+								format='LLL'
+								/>
+							</p>
 							<p>Location: {this.state.event.location}</p>
 							<p>Num people: {this.state.event.num_people}</p>
-							<p>Attendees: </p>
+							<p>Attendees: {this.state.event.attendees} </p>
 							<button onClick={this.handleDelete}>Delete</button>
 						</span>
 				</Modal>

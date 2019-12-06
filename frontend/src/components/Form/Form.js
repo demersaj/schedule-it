@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 
 const baseURL = 'https://cs467-backend-nc.appspot.com/slots/';
+const resURL = 'https://cs467-backend-nc.appspot.com/reservations/';
 
 class FormComponent extends Component {
 	constructor( props ) {
@@ -22,7 +23,7 @@ class FormComponent extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
-	// TODO: fix submit function
+	// TODO: fix submit function - reservation is not created
 	handleSubmit = async (e) => {
 		e.preventDefault();
 
@@ -42,8 +43,10 @@ class FormComponent extends Component {
 				location: this.state.location,
 				num_people: this.state.num_people
 				}
-		}).then(res => this.createReservation(res.data.id))
-			.then(<Redirect to={'/reservations'} />)
+		}).then(res => {
+			console.log(res.data)
+			this.createReservation(res.data.id)
+		})
 			.then(setTimeout(function(){window.location.reload(true)}, 500))
 			.catch(err => {
 				console.log(err);
@@ -60,7 +63,7 @@ class FormComponent extends Component {
 			    Authorization : 'Bearer ' + userData.token
 			},
 			method: 'post',
-			url: 'https://cs467-backend-nc.appspot.com/reservations/',
+			url: resURL,
 
 			data: {
 				slot: id

@@ -98,9 +98,6 @@ class Auth extends Component {
 					onSuccess={responseGoogle}
 					onFailure={responseGoogle}
 					cookiePolicy='single_host_origin'
-					// redirectUri='http://localhost:3000/reservations'
-					// uxMode='script'
-					// hostedDomain='https://apis.google.com/js/platform.js'
 				/>
 			</Aux>
 		)}
@@ -109,7 +106,7 @@ class Auth extends Component {
 				<GoogleLogout
 					clientId='636078506451-63230cnsvcb94hphlfnisme1onj2bbba.apps.googleusercontent.com'
 					onLogoutSuccess={logoutGoogle}
-					onFailure={error => console.log(error)}
+					onFailure={logoutGoogle}
 					buttonText='Logout'
 				/>
 			)
