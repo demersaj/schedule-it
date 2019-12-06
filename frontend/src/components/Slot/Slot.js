@@ -133,7 +133,6 @@ class Scheduler extends Component {
 			method: 'get',
 			url: baseURL
 		}).then(res => {
-			console.log(res.data);
 			let appointments = res.data;
 			for (let i = 0; i < appointments.length; i++) {
 				appointments[i].start = moment.utc(appointments[i].start).toDate();

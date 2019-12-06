@@ -44,7 +44,6 @@ class FormComponent extends Component {
 				num_people: this.state.num_people
 				}
 		}).then(res => {
-			console.log(res.data)
 			this.createReservation(res.data.id)
 		})
 			.then(setTimeout(function(){window.location.reload(true)}, 500))
@@ -56,7 +55,6 @@ class FormComponent extends Component {
 	// creates a reservation using a response from the slot creation
 	createReservation = (id) => {
 		let userData = JSON.parse(sessionStorage.getItem('userData'));
-		console.log(id);
 		axios({
 			"headers": {
 				"Content-Type": "application/json",

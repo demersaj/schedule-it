@@ -136,7 +136,6 @@ class Reservation extends Component {
 			let events = res.data;
 
 			for (let i = 0; i < events.length; i++) {
-				console.log(events[i]);
 				let attendees = [];
 				events[i].start = moment.utc(events[i].slot.start).toDate();
 				events[i].end = moment.utc(events[i].slot.end).toDate();
@@ -150,7 +149,6 @@ class Reservation extends Component {
 					attendees.push(events[i].owner.onid)
 				}
 				events[i].attendees = attendees;
-				console.log(events[i].attendees);
 			}
 			this.setState({
 				events: events
