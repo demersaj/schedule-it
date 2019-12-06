@@ -5,13 +5,14 @@ import moment from 'moment';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import Moment from 'react-moment';
-import Aux from '../../containers/Aux';
+import AddToCalendar from 'react-add-to-calendar';
 
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 const baseURL = 'https://cs467-backend-nc.appspot.com/reservations/';
 const deleteURL = 'https://cs467-backend-nc.appspot.com/reservation/';
 const localizer = momentLocalizer(moment);
+const icon = {'calendar-plus-o' : 'left'};
 
 class Reservation extends Component {
 	constructor(props) {
@@ -23,14 +24,14 @@ class Reservation extends Component {
 			events: [],
 			event: {
 				id: '',
-				start: '',
-				end: '',
+				startTime: '',
+				endTime: '',
 				title: '',
 				location: '',
 				num_people: '',
 				owner: '',
 			},
-			attendees: []
+			isLoading: true
 		};
 	}
 
@@ -59,14 +60,18 @@ class Reservation extends Component {
 	};
 
 	handleEventSelect = event => {
+		event.startTime = event.start;
+		event.endTime = event.end;
 		this.setState({
 			showSlot: true,
 			event: event
 		});
 	};
 
+
 	handleDelete = () => {
 		let userData = JSON.parse(sessionStorage.getItem('userData'));
+		this.setState({isLoading: true});
 		axios({
 			headers: {
 				'Content-Type': 'application/json',
@@ -74,7 +79,8 @@ class Reservation extends Component {
 			},
 			method: 'delete',
 			url: deleteURL + this.state.event.id + '/'
-		})//.then(setTimeout(function(){window.location.reload(true)}, 500))
+		}).then(setTimeout(function(){window.location.reload(true)}, 500));
+			this.setState({isLoading: false});
 	};
 
 
@@ -114,6 +120,11 @@ class Reservation extends Component {
 
 	componentDidMount() {
 		let userData = JSON.parse(sessionStorage.getItem('userData'));
+		if (!userData) {
+			return (<Redirect to={'/'} />)
+		} else if (userData.signedIn === false) {
+			return (<Redirect to={'/'}/>)
+		}
 		axios({
 			headers: {
 				'Content-Type': 'application/json',
@@ -146,7 +157,7 @@ class Reservation extends Component {
 			})
 		}).catch(err => {
 			console.log(err);
-		})
+		}).then(this.setState({isLoading: false}));
 	}
 
 
@@ -167,25 +178,31 @@ class Reservation extends Component {
 					onClose={this.closeSlot.bind(this)}
 				>
 					<a style={closeStyle} onClick={this.closeSlot.bind(this)}>X</a>
-						<span>
-							<h4>{this.state.event.title}</h4>
-							<p>Start: <Moment
-								date={this.state.event.start}
-								format='LLL'
+					<span>
+								<h4>{this.state.event.title}</h4>
+								<p>Start: <Moment
+									date={this.state.event.start}
+									format='LLL'
 								/>
-							</p>
-							<p>End: <Moment
-								date={this.state.event.end}
-								format='LLL'
+								</p>
+								<p>End: <Moment
+									date={this.state.event.end}
+									format='LLL'
 								/>
-							</p>
-							<p>Location: {this.state.event.location}</p>
-							<p>Num people: {this.state.event.num_people}</p>
-							<p>Attendees: {this.state.event.attendees} </p>
-							<button onClick={this.handleDelete}>Delete</button>
-						</span>
+								</p>
+								<p>Location: {this.state.event.location}</p>
+								<p>Num people: {this.state.event.num_people}</p>
+								<p>Attendees: {this.state.event.attendees} </p>
+								<button>
+									<AddToCalendar
+										event={this.state.event}
+										buttonLabel='Add to Calendar'
+										buttonTemplate={icon}
+									/>
+								</button> <br/>
+								<button onClick={this.handleDelete}>Delete</button>
+							</span>
 				</Modal>
-
 
 				<Calendar
 					selectable
@@ -194,12 +211,15 @@ class Reservation extends Component {
 					defaultDate={new Date()}
 					defaultView="month"
 					events={this.state.events}
+					endAccessor = {this.state.events.end}
+					startAccessor = {this.state.events.start}
 					style={{ height: "100vh" }}
 					onSelectEvent={this.handleEventSelect}
 					onSelectSlot={this.handleSelect}
 					components={{ event: this.eventDisplay }}
 					eventPropGetter = {this.eventStyleGetter}
 				/>
+
 			</div>
 		)
 	}

@@ -120,6 +120,11 @@ class Scheduler extends Component {
 
 	componentDidMount() {
 		let userData = JSON.parse(sessionStorage.getItem('userData'));
+		if (!userData) {
+			return (<Redirect to={'/'} />)
+		} else if (userData.signedIn === false) {
+			return (<Redirect to={'/'}/>)
+		}
 		axios({
 			headers: {
 				'Content-Type': 'application/json',
