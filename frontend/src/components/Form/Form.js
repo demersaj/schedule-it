@@ -23,7 +23,6 @@ class FormComponent extends Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
-	// TODO: fix submit function - reservation is not created
 	handleSubmit = async (e) => {
 		e.preventDefault();
 
@@ -44,9 +43,9 @@ class FormComponent extends Component {
 				num_people: this.state.num_people
 				}
 		}).then(res => {
+			console.log(res);
 			this.createReservation(res.data.id)
-		})
-			.then(setTimeout(function(){window.location.reload(true)}, 500))
+		}).then(setTimeout(function(){window.location.reload(true)}, 1250))
 			.catch(err => {
 				console.log(err);
 			})
