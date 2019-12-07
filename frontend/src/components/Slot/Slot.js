@@ -32,9 +32,8 @@ class Scheduler extends Component {
 				num_people: '',
 				owner: '',
 			},
-			people: '',
-			reservation: '',
-			onid: ''
+			start : '',
+			end: ''
 		};
 	}
 
@@ -80,12 +79,12 @@ class Scheduler extends Component {
 			url: deleteURL + this.state.event.id + '/'
 		}).then(this.closeSlot.bind(this))
 			// let DELETE request send, then reload page
-			.then(setTimeout(function(){window.location.reload(true)}, 500));
+			.then(setTimeout(function(){window.location.reload(true)}, 1000));
 	};
 
-	handleAddAttendee = () => {
+	handleAddAttendee = async () => {
 		let userData = JSON.parse(sessionStorage.getItem('userData'));
-		axios({
+		await axios({
 			"headers": {
 				"Content-Type": "application/json",
 				Authorization : 'Bearer ' + userData.token

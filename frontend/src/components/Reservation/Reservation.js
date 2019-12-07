@@ -24,8 +24,8 @@ class Reservation extends Component {
 			events: [],
 			event: {
 				id: '',
-				startTime: '',
-				endTime: '',
+				start: '',
+				end: '',
 				title: '',
 				location: '',
 				num_people: '',
@@ -79,8 +79,7 @@ class Reservation extends Component {
 			},
 			method: 'delete',
 			url: deleteURL + this.state.event.id + '/'
-		}).then(setTimeout(function(){window.location.reload(true)}, 500));
-			this.setState({isLoading: false});
+		}).then(setTimeout(function(){window.location.reload(true)}, 1000));
 	};
 
 
@@ -209,8 +208,6 @@ class Reservation extends Component {
 					defaultDate={new Date()}
 					defaultView="month"
 					events={this.state.events}
-					endAccessor = {this.state.events.end}
-					startAccessor = {this.state.events.start}
 					style={{ height: "100vh" }}
 					onSelectEvent={this.handleEventSelect}
 					onSelectSlot={this.handleSelect}
