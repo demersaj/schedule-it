@@ -105,7 +105,7 @@ class Scheduler extends Component {
 					slot: this.state.event.id
 				}
 			})
-		}).then(setTimeout(function(){window.location.reload(true)}, 750))
+		}).then(setTimeout(function(){window.location.reload(true)}, 1250))
 	};
 
 	eventDisplay = ({ event	}) => {
@@ -135,6 +135,7 @@ class Scheduler extends Component {
 		}).then(res => {
 			let appointments = res.data;
 			for (let i = 0; i < appointments.length; i++) {
+				console.log(appointments[i]);
 				appointments[i].start = moment.utc(appointments[i].start).toDate();
 				appointments[i].end = moment.utc(appointments[i].end).toDate();
 			}

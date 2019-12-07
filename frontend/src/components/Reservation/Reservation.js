@@ -155,7 +155,7 @@ class Reservation extends Component {
 			})
 		}).catch(err => {
 			console.log(err);
-		}).then(this.setState({isLoading: false}));
+		})
 	}
 
 
