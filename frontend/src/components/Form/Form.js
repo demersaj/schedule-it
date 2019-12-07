@@ -43,7 +43,6 @@ class FormComponent extends Component {
 				num_people: this.state.num_people
 			}
 		}).then(res => {
-			console.log(res);console.log(res);
 			this.createReservation(res.data.id)
 		}).then(res => {
 			setTimeout(function(){window.location.reload(true)}, 1250);

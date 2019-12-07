@@ -38,7 +38,6 @@ class Auth extends Component {
 
 	login = (res, type) => {
 		let user;
-		console.log(res);
 		if (type === 'google' && res.w3.U3) {
 			user = {
 				firstName: res.w3.ofa,
@@ -59,7 +58,6 @@ class Auth extends Component {
 			url: baseURL
 		}).then(res => {
 			if (res) {  // user exists
-				console.log(res);
 				user.id = res.data[0].id;
 				sessionStorage.setItem('userData', JSON.stringify(user));
 				this.setState({redirect: true});
@@ -83,7 +81,6 @@ class Auth extends Component {
 		};
 
 		const logoutGoogle = () => {
-			console.log('user logged out');
 			sessionStorage.clear();
 			(window.location.reload(true));
 		};
